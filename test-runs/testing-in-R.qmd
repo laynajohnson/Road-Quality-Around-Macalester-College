@@ -1,0 +1,240 @@
+---
+title: "Exposure Data Test"
+subtitle: "GEOG 394 Capturing Personal Exposures Across Space and Time"
+author: "Alayna Johnson"
+date: "February 11, 2025"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    code-tools: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning = FALSE)
+```
+
+
+# Loading Dependencies
+
+```{r loading-packages}
+#| message: false
+
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(sf)
+library(leaflet)
+library(viridis)
+```
+
+
+### Reading in Data
+```{r reading-data}
+#| message: false
+
+grandOlri <- read_csv("1505_Grand_Ave-2025-11-2_6-49-09 PM.csv")
+
+portlandSaratoga <- read_csv("1760_Portland_Ave-2025-11-2_9-42-04 PM.csv")
+```
+
+
+# Plotting Accelerometer Data
+
+## Accelerometer Measuring
+
+![Left: iOS device acceleration directions, right: adjusted acceleration directions](accelerometer-axes.png){width=70%}
+
+The measure that we are most interested in when looking at road quality is the upward and downward acceleration of the device mounted on the vehicle. iOS devices measure accelerations in the directions seen in the image on the left. Intuitively, it makes more sense for upwards Y acceleration to be positive and downwards Y to be negative as well as right X as positive and left X as negative. These adjustments were made to the data to make plots more intuitive. The image on the right shows what the directions of acceleration measurement look like now.
+
+The iOS device used to collect these accelerometer data is mounted on the inside of the vehicle in a vent phone mount. This means that the device sits straight up and down like the images above.
+
+
+
+## Drive from Portland to Saratoga
+
+This drive starts on Portland and Wheeler going through Summit Ave, Fairview Ave, Grand Ave, and ending on Saratoga.
+
+```{r plotting-accelerometer-home}
+
+#| cache: true
+
+# pivot_longer where accelerometer axis measurements are all in one col instead of separate
+portlandSaratoga_long <- portlandSaratoga %>%
+  mutate(accelerometer_y_new = -1* accelerometer_y,
+         accelerometer_x_new = -1 * accelerometer_x) %>%
+  pivot_longer(cols = c(accelerometer_x_new, accelerometer_y_new, accelerometer_z),
+               names_to = "axis", values_to = "acceleration") %>%
+  mutate(
+    axis = recode(axis, 
+                  "accelerometer_x_new" = "X", 
+                  "accelerometer_y_new" = "Y", 
+                  "accelerometer_z" = "Z"),
+     alpha_value = ifelse(axis == "Y", 1, 0.3)
+  )
+
+# mutate column to just have time for X axis
+portlandSaratoga_long <- portlandSaratoga_long %>%
+  group_by(accelerometer_local_time) %>%
+  mutate(
+    time_label = ifelse(axis == "X", paste("Time:", accelerometer_local_time), "")
+  ) %>%
+  ungroup()
+
+# plot
+p <- ggplot(portlandSaratoga_long, aes(x = accelerometer_local_time, y = acceleration, color = axis, group = axis)) +
+  geom_line(aes(text = paste(time_label, 
+                             "<br>Axis:", axis, 
+                             "<br>Acceleration:", acceleration),
+                alpha = alpha_value)) +
+  labs(title = "Acceleration - Portland Ave to Saratoga St", x = "Time", y = "Acceleration", color = "Axis") +
+  theme_minimal() +
+  scale_alpha_identity()
+
+
+p_plotly <- ggplotly(p, tooltip = "text") %>%
+  layout(
+    hovermode = "x unified",  # adding trace line/crosshair
+    shapes = list(
+      list(
+        type = "line",
+        xref = "x",
+        yref = "paper",
+        x0 = 0, x1 = 0,  
+        y0 = 0, y1 = 1,  
+        line = list(color = "darkgray", width = 1, dash = "dash")  # Dashed vertical line
+      )
+    )
+  )
+
+p_plotly
+
+
+```
+
+
+## Drive from Saratoga to Olri
+
+This drive starts on Saratoga and Summit, drives through Snelling, Grand, and Macalester St ending in the parking lot by the tennis courts.
+
+```{r plotting-accelerometer-olri}
+#| cache: true
+
+# pivot_longer where accelerometer axis measurements are all in one col instead of separate
+grandOlri_long <- grandOlri %>%
+ mutate(accelerometer_y_new = -1* accelerometer_y,
+         accelerometer_x_new = -1 * accelerometer_x) %>%
+  pivot_longer(cols = c(accelerometer_x_new, accelerometer_y_new, accelerometer_z),
+               names_to = "axis", values_to = "acceleration") %>%
+  mutate(
+    axis = recode(axis, 
+                  "accelerometer_x_new" = "X", 
+                  "accelerometer_y_new" = "Y", 
+                  "accelerometer_z" = "Z"),
+     alpha_value = ifelse(axis == "Y", 1, 0.3)
+  )
+
+# mutate column to just have time for X axis
+grandOlri_long <- grandOlri_long %>%
+  group_by(accelerometer_local_time) %>%
+  mutate(
+    time_label = ifelse(axis == "X", paste("Time:", accelerometer_local_time), "")
+  ) %>%
+  ungroup()
+
+# plot
+p2 <- ggplot(grandOlri_long, aes(x = accelerometer_local_time, y = acceleration, color = axis, group = axis)) +
+  geom_line(aes(text = paste(time_label, 
+                             "<br>Axis:", axis, 
+                             "<br>Acceleration:", acceleration),
+                alpha = alpha_value)) +
+  labs(title = "Acceleration - Saratoga St to Macalester St", x = "Time", y = "Acceleration", color = "Axis") +
+  theme_minimal() +
+  scale_alpha_identity()
+
+
+p_plotly2 <- ggplotly(p2, tooltip = "text") %>%
+  layout(
+    hovermode = "x unified",  # adding trace line/crosshair
+    shapes = list(
+      list(
+        type = "line",
+        xref = "x",
+        yref = "paper",
+        x0 = 0, x1 = 0,  
+        y0 = 0, y1 = 1,  
+        line = list(color = "darkgray", width = 1, dash = "dash")  # Dashed vertical line
+      )
+    )
+  )
+
+p_plotly2
+
+```
+
+
+
+# Mapping Accelerometer Data
+
+```{r combined-data}
+combined <- rbind(grandOlri, portlandSaratoga) %>%
+  mutate(accelerometer_y_new = -1 * accelerometer_y,
+         accelerometer_x_new = -1 * accelerometer_x) %>%
+  filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
+  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, location_verticalAccuracy, -location_speed)
+```
+
+
+
+```{r initial-map}
+#| cache: true
+
+# changing csv to sf object for mapping, EPSG:4326
+combined_sf <- st_as_sf(combined, coords = c("location_longitude", "location_latitude"), crs = 4326)
+
+# creating continuous color palette with turbo color scale from viridis
+pal <- colorNumeric(palette = rev(viridis::turbo(100)), domain = combined_sf$accelerometer_y_new)
+
+# Create Leaflet map
+leaflet(combined_sf) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addCircles(
+    radius = 1,
+    color = ~pal(accelerometer_y_new),  # continuous color scale for y acceleration
+    weight = 5,
+    opacity = 0.9,
+    popup = ~paste0("Acceleration Y: ", accelerometer_y_new)
+  ) %>%
+  addLegend(
+    pal = pal, 
+    values = combined_sf$accelerometer_y_new, 
+    title = "Accelerometer Y",
+    opacity = 1
+  )
+```
+
+
+\
+\
+
+
+comparing times --> subtracting one from the other to see change over time
+
+
+- projecting the points onto a line on each side of the street?
+
+ - snap points to a line (create manually, maybe a file with streets then select street? but does it have both sides?) then average spaces between them
+
+- Toggle for continuous vs discrete colors of y acceleration (discrete being only the worst values, red for down and blue for up)
+
+- Starting by driving both directions on main roads: Summit, Grand, Snelling, Fairview, Saint Clair
+
+- going into the neighborhoods, do I really want to go all the way to Saratoga?? Prob not since I have to do this drive multiple times...
+
+- weather! Seasons changing and what the road conditions are
+
+
+
+
+
