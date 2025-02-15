@@ -34,9 +34,9 @@ library(viridis)
 ```{r reading-data}
 #| message: false
 
-grandOlri <- read_csv("1505_Grand_Ave-2025-11-2_6-49-09 PM.csv")
+grandOlri <- read_csv("raw-data/1505_Grand_Ave-2025-11-2_6-49-09 PM.csv")
 
-portlandSaratoga <- read_csv("1760_Portland_Ave-2025-11-2_9-42-04 PM.csv")
+portlandSaratoga <- read_csv("raw-data/1760_Portland_Ave-2025-11-2_9-42-04 PM.csv")
 ```
 
 
