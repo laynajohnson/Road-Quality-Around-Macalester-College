@@ -1,0 +1,10 @@
+name: road-quality-analysis
+title:
+username: laynajohnson
+account: laynajohnson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14011494
+bundleId: 9806506
+url: https://laynajohnson.shinyapps.io/road-quality-analysis/
+version: 1
