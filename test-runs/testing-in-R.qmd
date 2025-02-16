@@ -9,7 +9,6 @@ format:
     toc-depth: 3
     embed-resources: true
     code-tools: true
-output-dir: "../"
 ---
 
 ```{r setup, include=FALSE}
