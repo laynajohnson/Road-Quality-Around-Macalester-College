@@ -37,7 +37,10 @@ library(viridis)
 grandOlri <- read_csv("raw-data/1505_Grand_Ave-2025-11-2_6-49-09 PM.csv")
 
 portlandSaratoga <- read_csv("raw-data/1760_Portland_Ave-2025-11-2_9-42-04 PM.csv")
+
+head(grandOlri)
 ```
+
 
 
 # Plotting Accelerometer Data
@@ -182,7 +185,9 @@ combined <- rbind(grandOlri, portlandSaratoga) %>%
   mutate(accelerometer_y_new = -1 * accelerometer_y,
          accelerometer_x_new = -1 * accelerometer_x) %>%
   filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
-  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, location_verticalAccuracy, -location_speed)
+  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -seconds_elapsed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time)
+
+head(combined)
 ```
 
 
