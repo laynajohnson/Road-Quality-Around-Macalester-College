@@ -1,0 +1,19 @@
+---
+title: "Recording Analysis"
+subtitle: "GEOG 394 Capturing Personal Exposures Across Space and Time"
+author: "Alayna Johnson"
+date: "February 17, 2025"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    code-tools: true
+---
+
+# Loading Dependencies
+
+```{r}
+
+```
+
