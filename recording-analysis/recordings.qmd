@@ -11,9 +11,94 @@ format:
     code-tools: true
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning = FALSE)
+```
+
+
 # Loading Dependencies
 
-```{r}
+```{r loading-packages}
+#| message: false
 
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(sf)
+library(leaflet)
+library(viridis)
+```
+
+
+
+```{r reading-data}
+#| message: false
+
+grand_east_west <- read_csv("raw-data/feb19-raw/23_53_Snelling_Ave_S-2025-19-2_3-33-02 PM.csv")
+grand_west_east <- read_csv("raw-data/feb19-raw/30_Fairview_Ave_S-2025-19-2_3-40-03 PM.csv")
+
+snelling_north_south_right_part <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_3-41-54 PM.csv")
+snelling_north_south_right_small <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_4-02-02 PM.csv")
+snelling_north_south_left <- read_csv("raw-data/feb19-raw/Snelling_Ave_N-2025-19-2_3-47-43 PM.csv")
+snelling_south_north_right <- read_csv("raw-data/feb19-raw/224_244_Snelling_Ave_S-2025-19-2_3-54-16 PM.csv")
+snelling_south_north_left_part <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_3-31-46 PM.csv")
+
+lincoln <- read_csv("raw-data/feb19-raw/100_110_Fairview_Ave_S-2025-19-2_4-17-30 PM.csv")
+
+fairview_south_north <- read_csv("raw-data/feb19-raw/232_Fairview_Ave_S-2025-19-2_3-44-20 PM.csv")
+fairview_north_south <- read_csv("raw-data/feb19-raw/Fairview_Ave_N-2025-19-2_3-27-57 PM.csv")
+
+saintclair_east_west <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_3-43-07 PM.csv")
+saintclair_west_east <- read_csv("raw-data/feb19-raw/265_299_Fairview_Ave_S-2025-19-2_3-29-41 PM.csv")
+
+summit_east_west <- read_csv("raw-data/feb19-raw/Summit_Ave-2025-19-2_3-26-14 PM.csv")
+summit_west_east <- read_csv("raw-data/feb19-raw/1794_1818_Summit_Ave-2025-19-2_3-45-53 PM.csv")
+summit_east_west_side <- read_csv("raw-data/feb19-raw/1583_Summit_Ave-2025-19-2_3-56-43 PM.csv")
+summit_west_east_side <- read_csv("raw-data/feb19-raw/1750_Summit_Ave-2025-19-2_4-00-23 PM.csv")
+
+cambridge_north_south <- read_csv("raw-data/feb19-raw/Summit_Ave-2025-19-2_4-12-59 PM.csv")
+cambridge_south_north <- read_csv("raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-06-21 PM.csv")
+vernon_north_south <- read_csv("raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-14-51 PM.csv")
+vernon_south_north <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_4-05-24 PM.csv")
+
+
+mac_street_north_south <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_4-03-06 PM.csv")
+mac_street_south_north <- read_csv("raw-data/feb19-raw/Macalester_College-2025-19-2_4-24-20 PM.csv")
+
+```
+
+
+
+
+```{r, eval=FALSE}
+# for viewing each data to see what street and direction
+
+data <- data %>%
+  mutate(accelerometer_y_new = -1 * accelerometer_y,
+         accelerometer_x_new = -1 * accelerometer_x) %>%
+  filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
+  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time)
+
+data <- st_as_sf(data, coords = c("location_longitude", "location_latitude"), crs = 4326)
+
+
+pal <- colorNumeric(palette = rev(viridis::turbo(100)), domain = data$accelerometer_y_new)
+
+# Create Leaflet map
+leaflet(data) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addCircles(
+    radius = 1,
+    color = ~pal(accelerometer_y_new),  # continuous color scale for y acceleration
+    weight = 5,
+    opacity = 0.9,
+    popup = ~paste0("Acceleration Y: ", accelerometer_y_new, "Time elapsed: ", seconds_elapsed)
+  ) %>%
+  addLegend(
+    pal = pal, 
+    values = data$accelerometer_y_new, 
+    title = "Accelerometer Y",
+    opacity = 1
+  )
 ```
 

@@ -27,9 +27,9 @@ ui <- navbarPage(
   ),
   theme = shinytheme("flatly"),
   
-  tabPanel("Data Protocol",
+  tabPanel("The Project",
            mainPanel(
-             h1("Data Collection and Management Protocol")
+             h1("Introduction")
            )),
   tabPanel("Test",
            sidebarLayout(
