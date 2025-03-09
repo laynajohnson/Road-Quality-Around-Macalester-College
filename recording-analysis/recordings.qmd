@@ -154,7 +154,6 @@ combine_recordings <- function(dataset_list, name_prefix) {
   
   data <- tibble::rowid_to_column(data, "ID")
   
-  
   return(map)
 }
 
@@ -178,8 +177,18 @@ feb19_recs <- list(
   mac_street_north_south, mac_street_south_north
 )
 
+feb27_recs <- list(
+  
+)
+
 # Calling the function for February 19th recordings
 combine_recordings(feb19_recs, "feb19")
+
+combine_recordings()
+
+
+# saving csv created from function in cleaned data
+# write_csv(feb19_combined, "data/cleaned-data/days-clean/feb19-clean.csv")
 
 ```
 
@@ -194,7 +203,7 @@ fairview1 <- fairview1 %>%
   mutate(accelerometer_y_new = -1 * accelerometer_y,
          accelerometer_x_new = -1 * accelerometer_x) %>%
   filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
-  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time)
+  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, -location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time)
 
 fairview1 <- st_as_sf(fairview1, coords = c("location_longitude", "location_latitude"), crs = 4326)
 
