@@ -35,71 +35,73 @@ Data for February 19th, 2025
 ```{r reading-data1}
 #| message: false
 
-grand_east_west <- read_csv("data/raw-data/feb19-raw/23_53_Snelling_Ave_S-2025-19-2_3-33-02 PM.csv")
-grand_west_east <- read_csv("data/raw-data/feb19-raw/30_Fairview_Ave_S-2025-19-2_3-40-03 PM.csv")
+grand_east_west1 <- read_csv("data/raw-data/feb19-raw/23_53_Snelling_Ave_S-2025-19-2_3-33-02 PM.csv")
+grand_west_east1 <- read_csv("data/raw-data/feb19-raw/30_Fairview_Ave_S-2025-19-2_3-40-03 PM.csv")
 
-snelling_north_south_right_part <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_3-41-54 PM.csv")
-snelling_north_south_right_small <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-02-02 PM.csv")
-snelling_north_south_left <- read_csv("data/raw-data/feb19-raw/Snelling_Ave_N-2025-19-2_3-47-43 PM.csv")
-snelling_south_north_right <- read_csv("data/raw-data/feb19-raw/224_244_Snelling_Ave_S-2025-19-2_3-54-16 PM.csv")
-snelling_south_north_left_part <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_3-31-46 PM.csv")
+snelling_north_south_right_part1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_3-41-54 PM.csv")
+snelling_north_south_right_small1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-02-02 PM.csv")
+snelling_north_south_left1 <- read_csv("data/raw-data/feb19-raw/Snelling_Ave_N-2025-19-2_3-47-43 PM.csv")
+snelling_south_north_right1 <- read_csv("data/raw-data/feb19-raw/224_244_Snelling_Ave_S-2025-19-2_3-54-16 PM.csv")
+snelling_south_north_left_part1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_3-31-46 PM.csv")
 
-lincoln <- read_csv("data/raw-data/feb19-raw/100_110_Fairview_Ave_S-2025-19-2_4-17-30 PM.csv")
+lincoln1 <- read_csv("data/raw-data/feb19-raw/100_110_Fairview_Ave_S-2025-19-2_4-17-30 PM.csv")
 
-fairview_south_north <- read_csv("data/raw-data/feb19-raw/232_Fairview_Ave_S-2025-19-2_3-44-20 PM.csv")
-fairview_north_south <- read_csv("data/raw-data/feb19-raw/Fairview_Ave_N-2025-19-2_3-27-57 PM.csv")
+fairview_south_north1 <- read_csv("data/raw-data/feb19-raw/232_Fairview_Ave_S-2025-19-2_3-44-20 PM.csv")
+fairview_north_south1 <- read_csv("data/raw-data/feb19-raw/Fairview_Ave_N-2025-19-2_3-27-57 PM.csv")
 
-saintclair_east_west <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_3-43-07 PM.csv")
-saintclair_west_east <- read_csv("data/raw-data/feb19-raw/265_299_Fairview_Ave_S-2025-19-2_3-29-41 PM.csv")
+saintclair_east_west1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_3-43-07 PM.csv")
+saintclair_west_east1 <- read_csv("data/raw-data/feb19-raw/265_299_Fairview_Ave_S-2025-19-2_3-29-41 PM.csv")
 
-summit_east_west <- read_csv("data/raw-data/feb19-raw/Summit_Ave-2025-19-2_3-26-14 PM.csv")
-summit_west_east <- read_csv("data/raw-data/feb19-raw/1794_1818_Summit_Ave-2025-19-2_3-45-53 PM.csv")
-summit_east_west_side <- read_csv("data/raw-data/feb19-raw/1583_Summit_Ave-2025-19-2_3-56-43 PM.csv")
-summit_west_east_side <- read_csv("data/raw-data/feb19-raw/1750_Summit_Ave-2025-19-2_4-00-23 PM.csv")
+summit_east_west1 <- read_csv("data/raw-data/feb19-raw/Summit_Ave-2025-19-2_3-26-14 PM.csv")
+summit_west_east1 <- read_csv("data/raw-data/feb19-raw/1794_1818_Summit_Ave-2025-19-2_3-45-53 PM.csv")
+summit_east_west_side1 <- read_csv("data/raw-data/feb19-raw/1583_Summit_Ave-2025-19-2_3-56-43 PM.csv")
+summit_west_east_side1 <- read_csv("data/raw-data/feb19-raw/1750_Summit_Ave-2025-19-2_4-00-23 PM.csv")
 
 # all have snow built up
-cambridge_north_south <- read_csv("data/raw-data/feb19-raw/Summit_Ave-2025-19-2_4-12-59 PM.csv")
-cambridge_south_north <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-06-21 PM.csv")
-vernon_north_south <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-14-51 PM.csv")
-vernon_south_north <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-05-24 PM.csv")
+Cambridge_north_south1 <- read_csv("data/raw-data/feb19-raw/Summit_Ave-2025-19-2_4-12-59 PM.csv")
+Cambridge_south_north1 <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-06-21 PM.csv")
+vernon_north_south1 <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-14-51 PM.csv")
+vernon_south_north1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-05-24 PM.csv")
 
 
-mac_street_north_south <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-03-06 PM.csv")
-mac_street_south_north <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-24-20 PM.csv")
+mac_street_north_south1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-03-06 PM.csv")
+mac_street_south_north1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-24-20 PM.csv")
 
 ```
+
 
 Data for February 27th, 2025
 
 ```{r reading-data2}
 #| message: FALSE
 
-fairview1 <- read_csv("data/raw-data/feb27-raw/2_46_Fairview_Ave_S-2025-27-2_7-21-44 PM.csv")
-fairview2 <- read_csv("data/raw-data/feb27-raw/58_66_Fairview_Ave_S-2025-27-2_7-07-08 PM.csv")
-fairview3 <- read_csv("data/raw-data/feb27-raw/232_Fairview_Ave_S-2025-27-2_6-58-09 PM.csv")
+#errant points in most data at time 0 or 1
 
-snelling1 <- read_csv("data/raw-data/feb27-raw/43_69_Snelling_Ave_N-2025-27-2_7-17-59 PM.csv")
+summit_east_west2 <- read_csv("data/raw-data/feb27-raw/1559_Portland_Ave-2025-27-2_7-05-48 PM.csv")
+summit_west_east_side2 <- read_csv("data/raw-data/feb27-raw/2_46_Fairview_Ave_S-2025-27-2_7-21-44 PM.csv")
+summit_east_west_side2 <- read_csv("data/raw-data/feb27-raw/43_69_Snelling_Ave_N-2025-27-2_7-17-59 PM.csv")
+summit_west_east2 <- read_csv("data/raw-data/feb27-raw/1818_Summit_Ave-2025-27-2_7-39-20 PM.csv")
 
-saintclair1 <- read_csv("data/raw-data/feb27-raw/1518_Saint_Clair_Ave-2025-27-2_7-14-57 PM.csv")
-saintcair2 <- read_csv("data/raw-data/feb27-raw/1562_1596_Saint_Clair_Ave-2025-27-2_7-00-20 PM.csv")
-saintclair3 <- read_csv("data/raw-data/feb27-raw/1813_1819_Saint_Clair_Ave-2025-27-2_7-38-09 PM.csv")
+grand_west_east2 <- read_csv("data/raw-data/feb27-raw/58_66_Fairview_Ave_S-2025-27-2_7-07-08 PM.csv")
+grand_east_west2 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-23-31 PM.csv")
 
-portland1 <- read_csv("data/raw-data/feb27-raw/1559_Portland_Ave-2025-27-2_7-05-48 PM.csv")
-portland2 <- read_csv("data/raw-data/feb27-raw/1576_Portland_Ave-2025-27-2_7-35-22 PM.csv")
+saintclair_west_east2 <- read_csv("data/raw-data/feb27-raw/232_Fairview_Ave_S-2025-27-2_6-58-09 PM.csv")
+saintclair_east_west2 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-36-58 PM.csv")
 
-summit1 <- read_csv("data/raw-data/feb27-raw/1818_Summit_Ave-2025-27-2_7-39-20 PM.csv")
+snelling_south_north_right2 <- read_csv("data/raw-data/feb27-raw/1518_Saint_Clair_Ave-2025-27-2_7-14-57 PM.csv")
+snelling_south_north_left2 <- read_csv("data/raw-data/feb27-raw/1562_1596_Saint_Clair_Ave-2025-27-2_7-00-20 PM.csv")
+snelling_north_south_right2 <- read_csv("data/raw-data/feb27-raw/1576_Portland_Ave-2025-27-2_7-35-22 PM.csv")
+snelling_north_south_left2 <- read_csv("data/raw-data/feb27-raw/Saratoga_St_N-2025-27-2_7-11-33 PM.csv")
 
-grand1 <- read_csv("data/raw-data/feb27-raw/1820_Grand_Ave-2025-27-2_7-24-59 PM.csv")
+fairview_south_north2 <- read_csv("data/raw-data/feb27-raw/1813_1819_Saint_Clair_Ave-2025-27-2_7-38-09 PM.csv")
+fairview_north_south2 <- read_csv("data/raw-data/feb27-raw/Cambridge_St-2025-27-2_6-56-48 PM.csv")
 
-cambridge <- read_csv("data/raw-data/feb27-raw/Cambridge_St-2025-27-2_6-56-48 PM.csv")
 
-mac1 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_6-53-24 PM.csv")
-mac2 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-23-31 PM.csv")
-mac3 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-29-01 PM.csv")
-mac4 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-36-58 PM.csv")
+lincoln2 <- read_csv("data/raw-data/feb27-raw/1820_Grand_Ave-2025-27-2_7-24-59 PM.csv")
 
-saratoga <- read_csv("data/raw-data/feb27-raw/Saratoga_St_N-2025-27-2_7-11-33 PM.csv")
+vernon_cambridge2 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_6-53-24 PM.csv")
 
+mac_street2 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-29-01 PM.csv")
 
 ```
 
@@ -109,7 +111,68 @@ Data for March 6th, 2025
 ```{r reading-data3}
 #| message: false
 
+saintclair_west_east3 <- read_csv("data/raw-data/mar06-raw/265_299_Fairview_Ave_S-2025-6-3_6-26-15 PM.csv")
+saintclair_east_west3 <- read_csv("data/raw-data/mar06-raw/Macalester_College-2025-6-3_6-49-03 PM.csv")
 
+#check
+summit_east_west_side3 <- read_csv("data/raw-data/mar06-raw/1543_Portland_Ave-2025-6-3_6-42-10 PM.csv")
+#good
+summit_west_east3 <- read_csv("data/raw-data/mar06-raw/1826_Summit_Ave-2025-6-3_6-31-57 PM.csv")
+summit_west_east_side3 <- read_csv("data/raw-data/mar06-raw/1826_Summit_Ave-2025-6-3_6-45-16 PM.csv")
+summit_east_west3 <- read_csv("data/raw-data/mar06-raw/Summit_Ave-2025-6-3_6-30-06 PM.csv")
+
+fairview_south_north3 <- read_csv("data/raw-data/mar06-raw/Cambridge_St-2025-6-3_6-24-47 PM.csv")
+fairview_north_south3 <-read_csv("data/raw-data/mar06-raw/1813_1819_Saint_Clair_Ave-2025-6-3_6-50-24 PM.csv")
+
+
+snelling_north_south_right3 <- read_csv("data/raw-data/mar06-raw/1580_1606_Summit_Ave-2025-6-3_6-47-29 PM.csv")
+snelling_north_south_left3 <- read_csv("data/raw-data/mar06-raw/Summit_Ave-2025-6-3_6-33-20 PM.csv")
+snelling_south_north_left3 <- read_csv("data/raw-data/mar06-raw/Saint_Clair_Ave-2025-6-3_6-27-38 PM.csv")
+snelling_south_north_right3 <- read_csv("data/raw-data/mar06-raw/1560_Saint_Clair_Ave-2025-6-3_6-38-19 PM.csv")
+
+grand_west_east3 <- read_csv("data/raw-data/mar06-raw/1818_Summit_Ave-2025-6-3_6-56-16 PM.csv")
+grand_east_west3 <- read_csv("data/raw-data/mar06-raw/Macalester_College-2025-6-3_7-00-35 PM.csv")
+
+vernon_cambridge3 <- read_csv("data/raw-data/mar06-raw/Macalester_College-2025-6-3_6-20-45 PM.csv")
+
+mac_street3 <- read_csv("data/raw-data/mar06-raw/30_Fairview_Ave_S-2025-6-3_7-04-00 PM.csv")
+
+lincoln3 <- read_csv("data/raw-data/mar06-raw/99_Fairview_Ave_S-2025-6-3_7-08-12 PM.csv")
+
+```
+
+
+Data for March 13, 2025
+
+```{r reading-data4}
+#| message: false
+
+# fix!
+summit_west_east_side4 <- read_csv("data/raw-data/mar13-raw/1_25_Fairview_Ave_S-2025-13-3_9-02-03 PM.csv")
+
+summit_west_east4 <- read_csv("data/raw-data/mar13-raw/2_46_Fairview_Ave_S-2025-13-3_9-08-10 PM.csv")
+summit_east_west_side4 <- read_csv("data/raw-data/mar13-raw/43_69_Snelling_Ave_N-2025-13-3_9-17-41 PM.csv")
+summit_east_west4 <- read_csv("data/raw-data/mar13-raw/Summit_Ave-2025-13-3_9-24-21 PM.csv")
+
+fairview_south_north4 <- read_csv("data/raw-data/mar13-raw/232_Fairview_Ave_S-2025-13-3_9-06-57 PM.csv")
+fairview_north_south4 <- read_csv("data/raw-data/mar13-raw/1747_Summit_Ave-2025-13-3_9-19-31 PM.csv")
+
+saintclair_west_east4 <- read_csv("data/raw-data/mar13-raw/265_299_Fairview_Ave_S-2025-13-3_9-21-03 PM.csv")
+saintclair_east_west4 <- read_csv("data/raw-data/mar13-raw/Macalester_College-2025-13-3_9-05-43 PM.csv")
+
+grand_west_east4 <- read_csv("data/raw-data/mar13-raw/Fairview_Ave_N-2025-13-3_9-26-13 PM.csv")
+grand_east_west4 <- read_csv("data/raw-data/mar13-raw/Macalester_College-2025-13-3_9-36-14 PM.csv")
+
+snelling_south_north_right4 <- read_csv("data/raw-data/mar13-raw/1556_Saint_Clair_Ave-2025-13-3_9-15-03 PM.csv")
+snelling_south_north_left4 <- read_csv("data/raw-data/mar13-raw/1562_1596_Saint_Clair_Ave-2025-13-3_9-22-41 PM.csv")
+snelling_north_south_right4 <- read_csv("data/raw-data/mar13-raw/1580_1606_Summit_Ave-2025-13-3_9-04-00 PM.csv")
+snelling_north_south_left4 <- read_csv("data/raw-data/mar13-raw/Summit_Ave-2025-13-3_9-09-25 PM.csv")
+
+mac_street4 <- read_csv("data/raw-data/mar13-raw/Summit_Ave-2025-13-3_9-28-49 PM.csv")
+
+lincoln4 <- read_csv("data/raw-data/mar13-raw/Macalester_College-2025-13-3_8-59-34 PM.csv")
+
+vernon_cambridge4 <- read_csv("data/raw-data/mar13-raw/Macalester_College-2025-13-3_9-33-02 PM.csv")
 ```
 
 
@@ -117,7 +180,7 @@ Data for March 6th, 2025
 
 ## Combining Data
 
-```{r}
+```{r function-combining-data}
 # Creating a function that takes in a list of data sets, joins them, and creates a simple visualization using leaflet
 
 combine_recordings <- function(dataset_list, name_prefix) {
@@ -125,7 +188,8 @@ combine_recordings <- function(dataset_list, name_prefix) {
      mutate(accelerometer_y_new = -1 * accelerometer_y,
          accelerometer_x_new = -1 * accelerometer_x) %>%
   filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
-  select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time)
+  dplyr::select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time) %>%
+    filter(seconds_elapsed != 0)
   
 # Making it spatial
   combined_data <- st_as_sf(combined_data, coords = c("location_longitude", "location_latitude"), crs = 4326)
@@ -161,74 +225,125 @@ combine_recordings <- function(dataset_list, name_prefix) {
 
 ## Visualizations
 
-```{r}
-# Creating list of data sets to combine for February 19th
+```{r combining}
+# Creating lists of data sets to combine
 feb19_recs <- list(
-  grand_east_west, grand_west_east,
-  snelling_north_south_right_part, snelling_north_south_right_small,
-  snelling_north_south_left, snelling_south_north_right,
-  snelling_south_north_left_part, lincoln,
-  fairview_south_north, fairview_north_south,
-  saintclair_east_west, saintclair_west_east,
-  summit_east_west, summit_west_east,
-  summit_east_west_side, summit_west_east_side,
-  cambridge_north_south, cambridge_south_north,
-  vernon_north_south, vernon_south_north,
-  mac_street_north_south, mac_street_south_north
+  grand_east_west1, grand_west_east1,
+  snelling_north_south_right_part1, snelling_north_south_right_small1,
+  snelling_north_south_left1, snelling_south_north_right1,
+  snelling_south_north_left_part1, lincoln1,
+  fairview_south_north1, fairview_north_south1,
+  saintclair_east_west1, saintclair_west_east1,
+  summit_east_west1, summit_west_east1,
+  summit_east_west_side1, summit_west_east_side1,
+  Cambridge_north_south1, Cambridge_south_north1,
+  vernon_north_south1, vernon_south_north1,
+  mac_street_north_south1, mac_street_south_north1
 )
 
 feb27_recs <- list(
-  
-)
+  grand_east_west2, grand_west_east2,
+  snelling_north_south_right2,
+  snelling_north_south_left2, snelling_south_north_right2,
+  snelling_south_north_left2,
+  fairview_south_north2, fairview_north_south2,
+  saintclair_east_west2, saintclair_west_east2,
+  summit_east_west2, summit_west_east2,
+  summit_east_west_side2, summit_west_east_side2,
+  vernon_cambridge2, lincoln2, mac_street2
+  )
 
-# Calling the function for February 19th recordings
+mar06_recs <- list(
+  grand_east_west3, grand_west_east3,
+  snelling_north_south_right3,
+  snelling_north_south_left3, snelling_south_north_right3,
+  snelling_south_north_left3,
+  fairview_south_north3, fairview_north_south3,
+  saintclair_east_west3, saintclair_west_east3,
+  summit_east_west3, summit_west_east3,
+  summit_east_west_side3, summit_west_east_side3,
+  vernon_cambridge3, lincoln3, mac_street3
+  )
+
+mar13_recs <- list(
+  grand_east_west4, grand_west_east4,
+  snelling_north_south_right4,
+  snelling_north_south_left4, snelling_south_north_right4,
+  snelling_south_north_left4,
+  fairview_south_north4, fairview_north_south4,
+  saintclair_east_west4, saintclair_west_east4,
+  summit_east_west4, summit_west_east4,
+  summit_east_west_side4, summit_west_east_side4,
+  vernon_cambridge4, lincoln4, mac_street4
+  )
+
+# Calling the function for recordings using lists from above
 combine_recordings(feb19_recs, "feb19")
 
-combine_recordings()
+combine_recordings(feb27_recs, "feb27")
 
+combine_recordings(mar06_recs, "mar06")
 
-# saving csv created from function in cleaned data
-# write_csv(feb19_combined, "data/cleaned-data/days-clean/feb19-clean.csv")
+combine_recordings(mar13_recs, "mar13")
 
+```
+
+```{r eval = FALSE}
+# saving csv created from function in cleaned data. Only needs to be done once
+write_csv(feb19_combined, "data/cleaned-data/days-clean/feb19-clean.csv")
 ```
 
 
 
 
+```{r eval = FALSE}
+# For viewing each data to see what street and direction
 
-```{r, eval=FALSE, include=FALSE}
-# for viewing each data to see what street and direction
-
-fairview1 <- fairview1 %>%
+summit_west_east_test <- summit_west_east4 %>%
   mutate(accelerometer_y_new = -1 * accelerometer_y,
          accelerometer_x_new = -1 * accelerometer_x) %>%
   filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
   select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, -location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time)
 
-fairview1 <- st_as_sf(fairview1, coords = c("location_longitude", "location_latitude"), crs = 4326)
+summit_west_east_test <- st_as_sf(summit_west_east_test, coords = c("location_longitude", "location_latitude"), crs = 4326)
 
 
-pal <- colorNumeric(palette = rev(viridis::turbo(100)), domain = fairview1$accelerometer_y_new)
+pal <- colorNumeric(palette = rev(viridis::turbo(100)), domain = summit_west_east_test$accelerometer_y_new)
 
 # Create Leaflet map
-leaflet(fairview1) %>%
+leaflet(summit_west_east_test) %>%
   addProviderTiles("CartoDB.Positron") %>%
   addCircles(
     radius = 1,
-    color = ~pal(accelerometer_y_new),  # continuous color scale for y acceleration
+    color = ~pal(accelerometer_y_new),
     weight = 5,
     opacity = 0.9,
     popup = ~paste0("Acceleration Y: ", accelerometer_y_new, "Time elapsed: ", seconds_elapsed)
   ) %>%
   addLegend(
     pal = pal, 
-    values = fairview1$accelerometer_y_new, 
+    values = summit_west_east_test$accelerometer_y_new, 
     title = "Accelerometer Y",
     opacity = 1
   )
 ```
 
 
+```{r}
+#| cache: true
+
+# Created road lines in Arc, visualizing them
+
+roads <- read_sf("data/raw-data/macalester_road_lines/macalester_road_lines.shp")
+
+roads <- st_transform(roads, crs = 4326)
+
+
+leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolylines(data = roads)
+
+```
 
 ```{r}
 library(sfdep)
@@ -241,4 +356,3 @@ feb19_combined <- cbind(feb19_combined, time_period)
 
 new_data <- as_spacetime(feb19_combined, "ID", "time_period")
 ```
-
