@@ -25,11 +25,12 @@ ui <- navbarPage(
                     padding-top: 30px
                     }'))
   ),
-  theme = shinytheme("flatly"),
+  theme = shinytheme("yeti"),
   
   tabPanel("The Project",
            mainPanel(
-             h1("Introduction")
+             h1("Introduction"),
+             h5("test")
            )),
   tabPanel("Test",
            sidebarLayout(
