@@ -15,7 +15,11 @@ format:
 knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning = FALSE)
 ```
 
+
+
 # Loading Dependencies
+
+
 
 ```{r loading-packages}
 #| message: false
@@ -30,7 +34,11 @@ library(viridis)
 library(RColorBrewer)
 ```
 
+
+
 Data for February 19th, 2025
+
+
 
 ```{r reading-data1}
 #| message: false
@@ -68,7 +76,11 @@ mac_street_south_north1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-
 
 ```
 
+
+
 Data for February 27th, 2025
+
+
 
 ```{r reading-data2}
 #| message: FALSE
@@ -102,7 +114,11 @@ mac_street2 <- read_csv("data/raw-data/feb27-raw/Macalester_College-2025-27-2_7-
 
 ```
 
+
+
 Data for March 6th, 2025
+
+
 
 ```{r reading-data3}
 #| message: false
@@ -136,7 +152,11 @@ lincoln3 <- read_csv("data/raw-data/mar06-raw/99_Fairview_Ave_S-2025-6-3_7-08-12
 
 ```
 
+
+
 Data for March 13th, 2025
+
+
 
 ```{r reading-data4}
 #| message: false
@@ -168,7 +188,11 @@ lincoln4 <- read_csv("data/raw-data/mar13-raw/Macalester_College-2025-13-3_8-59-
 vernon_cambridge4 <- read_csv("data/raw-data/mar13-raw/Macalester_College-2025-13-3_9-33-02 PM.csv")
 ```
 
+
+
 Data for March 20th, 2025
+
+
 
 ```{r reading-data5}
 #| message: false
@@ -200,7 +224,11 @@ vernon_cambridge5 <- read_csv("data/raw-data/mar20-raw/Macalester_College-2025-2
 
 ```
 
+
+
 Data for March 27th, 2025
+
+
 
 ```{r reading-data6}
 #| message: false
@@ -232,7 +260,11 @@ mac_street6 <- read_csv("data/raw-data/mar27-raw/Summit_Ave-2025-27-3_9-33-22 
 
 ```
 
+
+
 Data for April 3rd, 2025
+
+
 
 ```{r reading-data7}
 #| message: false
@@ -265,16 +297,24 @@ lincoln7 <- read_csv("data/raw-data/apr03-raw/1814_Lincoln_Ave-2025-3-4_10-41-28
 
 ```
 
+
+
 Data for April 10th, 2025
+
+
 
 ```{r reading-data8}
 
 ```
 
 
+
+
 # Recordings
 
 ## Combining Data
+
+
 
 ```{r function-combining-data}
 # Creating a function that takes in a list of data sets, joins them, and creates a simple visualization using leaflet
@@ -288,17 +328,50 @@ combine_recordings <- function(dataset_list, name_prefix) {
   dplyr::select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time) %>%
     filter(seconds_elapsed != 0)
   
+# Making it spatial
+  combined_data <- st_as_sf(combined_data, coords = c("location_longitude", "location_latitude"), crs = 4326)
+  
+  # Leaflet map with Y accelerometer val
 
+  pal <- colorBin(
+  palette = brewer.pal(4, "Reds"),
+  domain = c(0, 2.5),
+  bins = c(0, 0.315, 1.6, 2.0, 4),
+  na.color = "#ccc"
+)
+  
+  map <- leaflet(combined_data) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addCircles(
+      radius = 1,
+      color = ~pal(L2_norm),
+      weight = 5,
+      opacity = 0.9,
+      popup = ~paste0("Mag of Accel: ", L2_norm)
+    ) %>%
+    addLegend(
+      pal = pal, 
+      values = combined_data$L2_norm, 
+      title = "Magnitude of Acceleration",
+      opacity = 1
+    )
+
+  
   # Changing the data name to name_prefix_combined
   data <- assign(paste0(name_prefix, "_combined"), combined_data, envir = .GlobalEnv)
   
   data <- tibble::rowid_to_column(data, "ID")
-
+  
+  return(map)
 }
 
 ```
 
+
+
 ## Visualizations
+
+
 
 ```{r lists-of-data}
 # Creating lists of data sets to combine
@@ -388,7 +461,6 @@ apr03_recs <- list(grand_east_west7, grand_west_east7,
   
 )
 ```
-
 
 ```{r calling-function}
 # Calling the function for recordings using lists from above
@@ -501,9 +573,6 @@ dataset_list <- list(feb27_combined, mar06_combined, mar13_combined, mar20_combi
 processed_data <- process_datasets(dataset_list)
 
 ```
-
-
-
 
 ```{r}
 library(sqldf)
