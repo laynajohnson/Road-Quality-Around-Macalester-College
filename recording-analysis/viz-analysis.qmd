@@ -103,35 +103,34 @@ mapping <- function(combined_data, title) {
      opacity = 1
     ) %>%
     addControl(
-   html = paste0("<h3>Road Quality Around Macalester College on ", title, " 2025</h3>"),  
+   html = paste0("<h3>Road Quality Around Macalester College on ", title, ", 2025</h3>"),  
     position = "topleft"
    )%>%
     addControl(
   html = paste0(
     "<div style='
       all: unset;
-      font-size:11px;
-       line-height:1.4;
+      font-size:10px;
+      line-height:1.2;
       color: black;
+      display: block;
       text-shadow:
         -1px -1px 0 #e8e8e8,
          1px -1px 0 #e8e8e8,
         -1px  1px 0 #e8e8e8,
          1px  1px 0 #e8e8e8;
     '>",
-     "Cartographer: Alayna Johnson, Macalester 25'<br>",
-    "Acceleration and location data collected using<br>",
-    "Sensor Logger smartphone application on iPhone 14",
+     "Cartographer: Alayna Johnson, Macalester 25'<br> Acceleration and location data collected using <br> Sensor Logger smartphone application on iPhone 14",
     "</div>"
   ),
-  position = "bottomright",
+  position = "bottomleft",
   className = "fieldset {
     border: 0;
 }") %>%
     htmlwidgets::onRender("
       function(el, x) {
         var map = this;
-        map.zoomControl.setPosition('bottomleft');
+        map.zoomControl.setPosition('bottomright');
       }
     ")
   
@@ -149,3 +148,5 @@ mapping(mar27, "March 27th")
 mapping(apr03, "April 3rd")
 ```
 
+filling map, moving title legend 
+label street in popup
