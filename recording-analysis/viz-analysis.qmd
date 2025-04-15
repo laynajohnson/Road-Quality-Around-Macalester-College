@@ -96,16 +96,27 @@ mapping <- function(combined_data, title) {
       popup = ~paste0("<b>", comfort_level, "</b>",
                       "<br>Magnitude of Acceleration: ", round(L2_norm, 2))
     ) %>%
+   
+    addControl(
+   html = paste0(
+      "<div style='
+        all: unset;
+        font-size:25px;
+        font-family: 'Lato', sans-serif;
+        color: black;
+        display: block;
+      '>",
+     "Road Quality Around Macalester College on ", title, ", 2025"),  
+    position = "topleft"
+   )%>%
+  
     addLegend(
      colors = pal(bins[-length(bins)]),  # skip last bin
      labels = labels,
      title = "Comfort Level (m/s<sup>2</sup>)",
-     opacity = 1
+     opacity = 1,
+     position = "topleft"
     ) %>%
-    addControl(
-   html = paste0("<h3>Road Quality Around Macalester College on ", title, ", 2025</h3>"),  
-    position = "topleft"
-   )%>%
     addControl(
   html = paste0(
     "<div style='

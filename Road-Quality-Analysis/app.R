@@ -11,31 +11,135 @@ library(sf)
 library(leaflet)
 # library(viridis)
 
-# creating custom theme for shiny app
-custom_theme <- bs_theme(
-  version = 5,
-  bootswatch = "united", # bootswatch theme
-  bg = "#edebeb",        # background
-  fg = "#1e1e1e",        # text
-  primary = "#803025",    
-  base_font = font_google("Ubuntu"),
-  heading_font = font_google("Merriweather"),
-  code_font = font_google("Fira Code")
-)
+# # creating custom theme for shiny app
+# custom_theme <- bs_theme(
+#   version = 5,
+#   bootswatch = "morph", # bootswatch theme
+#   bg = "#f3ede9",        # background
+#   fg = "#1e1e1e",        # text
+#   primary = "#803025",    
+#   base_font = font_google("Ubuntu"),
+#   heading_font = font_google("Merriweather"),
+#   code_font = font_google("Fira Code")
+# )
+# 
+# custom_theme <- bs_add_rules(custom_theme, "
+#   .navbar {
+#     background-color: #f6f !important;
+#   }
+#   .navbar .navbar-brand,
+#   .navbar-nav > li > a {
+#     color: #f3ede6 !important;
+#   }
+#   body, .container-fluid {
+#     background-color: #f6f !important;
+#   }
+#   .main-panel, .tab-pane .col-sm-8 {
+#     background-color: #f6f !important;
+#     padding: 20px;
+#     border-radius: 8px;
+#   }
+# ")
 
-custom_theme <- bs_add_rules(custom_theme, "
-  .navbar {
-    background-color: #803025 !important;
-  }
-  .navbar .navbar-brand,
-  .navbar-nav > li > a {
-    color: #f3ede6 !important;
-  }
-")
+# Reading in data and creating function for map
+
+feb27 <- read_csv("data/cleaned-data/combined-clean/feb27-clean.csv")
+mar06 <- read_csv("data/cleaned-data/combined-clean/mar06-clean.csv")
+mar13 <- read_csv("data/cleaned-data/combined-clean/mar13-clean.csv")
+mar20 <- read_csv("data/cleaned-data/combined-clean/mar20-clean.csv")
+mar27 <- read_csv("data/cleaned-data/combined-clean/mar27-clean.csv")
+apr03 <- read_csv("data/cleaned-data/combined-clean/apr03-clean.csv")
+
+mapping <- function(combined_data, title) {
+  # Making it spatial
+  combined_data <- st_as_sf(combined_data, coords = c("location_longitude", "location_latitude"), crs = 4326)
+  
+  # Leaflet map with Y accelerometer val
+  
+  labels <- c("Comfortable (0 - 0.315)", "Fairly Uncomfortable (0.315 - 1.6)", "Uncomfortable (1.6 - 2)", "Extreme Discomfort (2+)")
+  bins <- c(0, 0.315, 1.6, 2.0, 4)
+  
+  pal <- colorBin(
+    palette = brewer.pal(4, "Reds"),
+    domain = c(0, 2.5),
+    bins = bins,
+    na.color = "#ccc"
+  )
+  
+  combined_data$comfort_level <- cut(
+    combined_data$L2_norm,
+    breaks = c(-Inf, 0.315, 1.6, 2.0, Inf),
+    labels = c("Comfortable", "Fairly Uncomfortable", "Uncomfortable", "Extreme Discomfort"),
+    right = TRUE
+  )
+  
+  map <- leaflet(combined_data, options = leafletOptions(zoomControl = TRUE)) %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    addCircles(
+      radius = 1,
+      color = ~pal(L2_norm),
+      weight = 5,
+      opacity = 0.9,
+      popup = ~paste0("<b>", comfort_level, "</b>",
+                      "<br>Magnitude of Acceleration: ", round(L2_norm, 2))
+    ) %>%
+    
+    addControl(
+      html = paste0(
+        "<div style='
+        all: unset;
+        font-size:25px;
+        font-family: 'Lato', sans-serif;
+        color: black;
+        display: block;
+      '>",
+        "Road Quality Around Macalester College on ", title, ", 2025"),  
+      position = "topleft"
+    )%>%
+    
+    addLegend(
+      colors = pal(bins[-length(bins)]),  # skip last bin
+      labels = labels,
+      title = "Comfort Level (m/s<sup>2</sup>)",
+      opacity = 1,
+      position = "topleft"
+    ) %>%
+    addControl(
+      html = paste0(
+        "<div style='
+      all: unset;
+      font-size:10px;
+      line-height:1.2;
+      color: black;
+      display: block;
+      text-shadow:
+        -1px -1px 0 #e8e8e8,
+         1px -1px 0 #e8e8e8,
+        -1px  1px 0 #e8e8e8,
+         1px  1px 0 #e8e8e8;
+    '>",
+        "Cartographer: Alayna Johnson, Macalester 25'<br> Acceleration and location data collected using <br> Sensor Logger smartphone application on iPhone 14",
+        "</div>"
+      ),
+      position = "bottomleft",
+      className = "fieldset {
+    border: 0;
+}") %>%
+    htmlwidgets::onRender("
+      function(el, x) {
+        var map = this;
+        map.zoomControl.setPosition('bottomright');
+      }
+    ")
+  
+  return(map)
+}
+
 
 # Define UIs for application 
 ui <- fluidPage(
-  theme = custom_theme,  
+  theme = shinytheme("simplex"),
+  
   # creating the title
   div(
     style = "background-color: #803025; padding: 20px;",
@@ -51,8 +155,9 @@ ui <- fluidPage(
     
     tags$head(
       tags$style(HTML('.navbar-nav > li > a, .navbar-brand {
-                      height: 20px;
-                      padding-top: 0px;
+                      height: 15px;
+                      padding-top: 10px;
+                      font-size: 20px;
                       }'))
     ),
     
@@ -77,10 +182,24 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(
                  width = 4,
-                 h2("some text")
+                 selectInput(
+                   inputId = "date_choice",
+                   label = "Choose a date:",
+                   choices = c(
+                     "February 27th" = "feb27",
+                     "March 6th" = "mar06",
+                     "March 13th" = "mar13",
+                     "March 20th" = "mar20",
+                     "March 27th" = "mar27",
+                     "April 3rd" = "apr03"
+                   ),
+                   selected = "feb27"
+                 )
                ),
                mainPanel(
-                 fluidRow()
+                 fluidRow(
+                   column(width = 11, leafletOutput("mag_map"), height = 300)
+                 )
                )
              )),
     
@@ -100,16 +219,30 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    # output$distPlot <- renderPlot({
-    #     # generate bins based on input$bins from ui.R
-    #     x    <- faithful[, 2]
-    #     bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    # 
-    #     # draw the histogram with the specified number of bins
-    #     hist(x, breaks = bins, col = 'darkgray', border = 'white',
-    #          xlab = 'Waiting time to next eruption (in mins)',
-    #          main = 'Histogram of waiting times')
-    # })
+  dataset_list <- list(
+    feb27 = feb27,
+    mar06 = mar06,
+    mar13 = mar13,
+    mar20 = mar20,
+    mar27 = mar27,
+    apr03 = apr03
+  )
+  
+  date_titles <- c(
+    feb27 = "February 27th",
+    mar06 = "March 6th",
+    mar13 = "March 13th",
+    mar20 = "March 20th",
+    mar27 = "March 27th",
+    apr03 = "April 3rd"
+  )
+  
+  output$mag_map <- renderLeaflet({
+    req(input$date_choice)
+    selected_data <- dataset_list[[input$date_choice]]
+    selected_title <- date_titles[[input$date_choice]]
+    mapping(selected_data, title = selected_title)
+  })
 }
 
 # Run the application 
