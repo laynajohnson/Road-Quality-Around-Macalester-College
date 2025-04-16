@@ -57,8 +57,8 @@ summit_east_west_side1 <- read_csv("data/raw-data/feb19-raw/1583_Summit_Ave-2025
 summit_west_east_side1 <- read_csv("data/raw-data/feb19-raw/1750_Summit_Ave-2025-19-2_4-00-23 PM.csv")
 
 # all have snow built up
-Cambridge_north_south1 <- read_csv("data/raw-data/feb19-raw/Summit_Ave-2025-19-2_4-12-59 PM.csv")
-Cambridge_south_north1 <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-06-21 PM.csv")
+cambridge_north_south1 <- read_csv("data/raw-data/feb19-raw/Summit_Ave-2025-19-2_4-12-59 PM.csv")
+cambridge_south_north1 <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-06-21 PM.csv")
 vernon_north_south1 <- read_csv("data/raw-data/feb19-raw/Cambridge_Triangle-2025-19-2_4-14-51 PM.csv")
 vernon_south_north1 <- read_csv("data/raw-data/feb19-raw/Macalester_College-2025-19-2_4-05-24 PM.csv")
 
@@ -265,11 +265,6 @@ lincoln7 <- read_csv("data/raw-data/apr03-raw/1814_Lincoln_Ave-2025-3-4_10-41-28
 
 ```
 
-Data for April 10th, 2025
-
-```{r reading-data8}
-
-```
 
 
 # Recordings
@@ -277,32 +272,110 @@ Data for April 10th, 2025
 ## Combining Data
 
 ```{r function-combining-data}
-# Creating a function that takes in a list of data sets, joins them, and creates a simple visualization using leaflet
+# Creating a function that takes in a list of data sets, joins them, and takes out any unnecessary variables in data
 
-combine_recordings <- function(dataset_list, name_prefix) {
-  combined_data <- bind_rows(dataset_list) %>%
-     mutate(accelerometer_y_new = -1 * accelerometer_y,
-         accelerometer_x_new = -1 * accelerometer_x) %>%
-    mutate(L2_norm = sqrt(accelerometer_y_new^2 + accelerometer_x_new^2 + accelerometer_z^2)) %>%
-  filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
-  dplyr::select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time) %>%
-    filter(seconds_elapsed != 0)
+# combine_recordings <- function(dataset_list, name_prefix) {
+#   combined_data <- bind_rows(dataset_list) %>%
+#      mutate(accelerometer_y_new = -1 * accelerometer_y,
+#          accelerometer_x_new = -1 * accelerometer_x) %>%
+#     mutate(L2_norm = sqrt(accelerometer_y_new^2 + accelerometer_x_new^2 + accelerometer_z^2)) %>%
+#   filter(!is.na(location_longitude)& !is.na(location_latitude)) %>%
+#   dplyr::select(-location_altitude, -location_speedAccuracy, -location_bearingAccuracy, - location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy, -location_verticalAccuracy, -location_speed, -accelerometerUncalibrated_z, -accelerometerUncalibrated_x, -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time, -accelerometer_x, -accelerometer_y, -accelerometer_local_time) %>%
+#     filter(seconds_elapsed != 0)
+#   
+# 
+#   # Changing the data name to name_prefix_combined
+#   data <- assign(paste0(name_prefix, "_combined"), combined_data, envir = .GlobalEnv)
+#   
+#   data <- tibble::rowid_to_column(data, "ID")
+# 
+# }
+
+```
+
+
+Improving previous function
+
+```{r}
+# Function to label streets and combine datasets
+label_and_combine <- function(dataset_list, name_prefix) {
   
+   if (is.null(names(dataset_list)) || any(names(dataset_list) == "")) {
+    list_expr <- as.list(substitute(dataset_list))[-1]
+    names(dataset_list) <- sapply(list_expr, deparse)
+  }
 
-  # Changing the data name to name_prefix_combined
-  data <- assign(paste0(name_prefix, "_combined"), combined_data, envir = .GlobalEnv)
-  
-  data <- tibble::rowid_to_column(data, "ID")
+  # Function inside function to use similar naming conventions from naming the data before in order to get the street name label (street_name variable value)
+  get_street_name <- function(name) {
+    case_when(
+      str_detect(name, "grand_east_west") ~ "Grand Avenue West",
+      str_detect(name, "grand_west_east") ~ "Grand Avenue East",
+      str_detect(name, "snelling_north_south_right") ~ "Snelling Avenue South R",
+      str_detect(name, "snelling_north_south_left") ~ "Snelling Avenue South L",
+      str_detect(name, "snelling_south_north_right") ~ "Snelling Avenue North R",
+      str_detect(name, "snelling_south_north_left") ~ "Snelling Avenue North L",
+      str_detect(name, "fairview_north_south") ~ "Fairview Avenue South",
+      str_detect(name, "fairview_south_north") ~ "Fairview Avenue North",
+      str_detect(name, "saintclair_north_south") ~ "St. Clair Avenue South",
+      str_detect(name, "saintclair_south_north") ~ "St. Clair Avenue North",
+      str_detect(name, "summit_east_west_side") ~ "Summit Avenue West S",
+      str_detect(name, "summit_west_east_side") ~ "Summit Avenue East S",
+      str_detect(name, "summit_east_west") ~ "Summit Avenue West",
+      str_detect(name, "summit_west_east") ~ "Summit Avenue East",
+      str_detect(name, "mac_street") ~ "Macalester Street",
+      str_detect(name, "vernon|cambridge") ~ "Vernon and Cambridge",
+      str_detect(name, "lincoln") ~ "Lincoln Avenue",
+      TRUE ~ "Unknown"
+    )
+  }
 
+  # Function inside function to street name column to each dataset
+  updated_list <- Map(function(data, name) {
+    data$street_name <- get_street_name(name)
+    return(data)
+  }, dataset_list, names(dataset_list))
+
+  # Combine data
+  combined_data <- bind_rows(updated_list) %>%
+    mutate(
+      accelerometer_y_new = -1 * accelerometer_y,
+      accelerometer_x_new = -1 * accelerometer_x,
+      L2_norm = sqrt(accelerometer_y_new^2 + accelerometer_x_new^2 + accelerometer_z^2)
+    ) %>%
+    filter(!is.na(location_longitude) & !is.na(location_latitude)) %>%
+    select(
+      -location_altitude, -location_speedAccuracy, -location_bearingAccuracy,
+      -location_altitudeAboveMeanSeaLevel, -location_bearing, -location_horizontalAccuracy,
+      -location_verticalAccuracy, -location_speed,
+      -accelerometerUncalibrated_z, -accelerometerUncalibrated_x,
+      -accelerometerUncalibrated_y, -accelerometerUncalibrated_local_time,
+      -accelerometer_x, -accelerometer_y, -accelerometer_local_time
+    ) %>%
+    filter(seconds_elapsed != 0) %>%
+    tibble::rowid_to_column("ID")
+
+  assign(paste0(name_prefix, "_combined"), combined_data, envir = .GlobalEnv)
+
+  return(combined_data)
 }
 
 ```
 
+
 ## Visualizations
+
+```{r}
+# function to take teh lists from below and make their names the same as the input in order to use them for the function before
+name_list <- function(...) {
+  args <- substitute(list(...))[-1]
+  setNames(list(...), sapply(args, deparse))
+}
+```
+
 
 ```{r lists-of-data}
 # Creating lists of data sets to combine
-feb19_recs <- list(
+feb19_recs <- name_list(
   grand_east_west1, grand_west_east1,
   snelling_north_south_right_part1, snelling_north_south_right_small1,
   snelling_north_south_left1, snelling_south_north_right1,
@@ -311,12 +384,12 @@ feb19_recs <- list(
   saintclair_east_west1, saintclair_west_east1,
   summit_east_west1, summit_west_east1,
   summit_east_west_side1, summit_west_east_side1,
-  Cambridge_north_south1, Cambridge_south_north1,
+  cambridge_north_south1, cambridge_south_north1,
   vernon_north_south1, vernon_south_north1,
   mac_street_north_south1, mac_street_south_north1
 )
 
-feb27_recs <- list(
+feb27_recs <- name_list(
   grand_east_west2, grand_west_east2,
   snelling_north_south_right2,
   snelling_north_south_left2, snelling_south_north_right2,
@@ -328,7 +401,7 @@ feb27_recs <- list(
   vernon_cambridge2, lincoln2, mac_street2
   )
 
-mar06_recs <- list(
+mar06_recs <- name_list(
   grand_east_west3, grand_west_east3,
   snelling_north_south_right3,
   snelling_north_south_left3, snelling_south_north_right3,
@@ -340,7 +413,7 @@ mar06_recs <- list(
   vernon_cambridge3, lincoln3, mac_street3
   )
 
-mar13_recs <- list(
+mar13_recs <- name_list(
   grand_east_west4, grand_west_east4,
   snelling_north_south_right4,
   snelling_north_south_left4, snelling_south_north_right4,
@@ -352,7 +425,7 @@ mar13_recs <- list(
   vernon_cambridge4, lincoln4, mac_street4
   )
 
-mar20_recs <- list(grand_east_west5, grand_west_east5,
+mar20_recs <- name_list(grand_east_west5, grand_west_east5,
   snelling_north_south_right5,
   snelling_north_south_left5,
   snelling_south_north_left5,
@@ -364,7 +437,7 @@ mar20_recs <- list(grand_east_west5, grand_west_east5,
   
 )
 
-mar27_recs <- list(grand_east_west6, grand_west_east6,
+mar27_recs <- name_list(grand_east_west6, grand_west_east6,
   snelling_north_south_right6,
   snelling_north_south_left6, snelling_south_north_right6,
   snelling_south_north_left6,
@@ -376,7 +449,7 @@ mar27_recs <- list(grand_east_west6, grand_west_east6,
   
 )
 
-apr03_recs <- list(grand_east_west7, grand_west_east7,
+apr03_recs <- name_list(grand_east_west7, grand_west_east7,
   snelling_north_south_right7,
   snelling_north_south_left7, snelling_south_north_right7,
   snelling_south_north_left7,
@@ -392,18 +465,19 @@ apr03_recs <- list(grand_east_west7, grand_west_east7,
 
 ```{r calling-function}
 # Calling the function for recordings using lists from above
-combine_recordings(feb19_recs, "feb19")
-combine_recordings(feb27_recs, "feb27")
-combine_recordings(mar06_recs, "mar06")
-combine_recordings(mar13_recs, "mar13")
-combine_recordings(mar20_recs, "mar20")
-combine_recordings(mar27_recs, "mar27")
-combine_recordings(apr03_recs, "apr03")
+label_and_combine(feb19_recs, "feb19")
+label_and_combine(feb27_recs, "feb27")
+label_and_combine(mar06_recs, "mar06")
+label_and_combine(mar13_recs, "mar13")
+label_and_combine(mar20_recs, "mar20")
+label_and_combine(mar27_recs, "mar27")
+label_and_combine(apr03_recs, "apr03")
 
 ```
 
 ```{r eval = FALSE}
 # saving csv created from function in cleaned data. Only needs to be done once
+write_csv(feb19_combined, "data/cleaned-data/combined-clean/feb19-clean.csv")
 write_csv(feb27_combined, "data/cleaned-data/combined-clean/feb27-clean.csv")
 write_csv(mar06_combined, "data/cleaned-data/combined-clean/mar06-clean.csv")
 write_csv(mar13_combined, "data/cleaned-data/combined-clean/mar13-clean.csv")
@@ -412,6 +486,32 @@ write_csv(mar27_combined, "data/cleaned-data/combined-clean/mar27-clean.csv")
 write_csv(apr03_combined, "data/cleaned-data/combined-clean/apr03-clean.csv")
 
 ```
+
+
+```{r}
+save_cleaned_csvs <- function(dataset_list, folder_path = "data/cleaned-data/separate-clean") {
+  # making sure the folder path exists
+  if (!dir.exists(folder_path)) dir.create(folder_path, recursive = TRUE)
+  
+  # saving each data as csv
+  for (name in names(dataset_list)) {
+    file_path <- file.path(folder_path, paste0(name, "-clean.csv"))
+    readr::write_csv(dataset_list[[name]], file_path)
+  }
+}
+```
+
+
+```{r}
+save_cleaned_csvs(feb19_recs)
+save_cleaned_csvs(feb27_recs)
+save_cleaned_csvs(mar06_recs)
+save_cleaned_csvs(mar13_recs)
+save_cleaned_csvs(mar20_recs)
+save_cleaned_csvs(mar27_recs)
+save_cleaned_csvs(apr03_recs)
+```
+
 
 ```{r eval = FALSE}
 # For viewing each data to see what street and direction

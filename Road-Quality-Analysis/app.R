@@ -2,47 +2,18 @@
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
-library(bslib)
 
 library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(sf)
 library(leaflet)
-# library(viridis)
+library(RColorBrewer)
+library(htmltools)
 
-# # creating custom theme for shiny app
-# custom_theme <- bs_theme(
-#   version = 5,
-#   bootswatch = "morph", # bootswatch theme
-#   bg = "#f3ede9",        # background
-#   fg = "#1e1e1e",        # text
-#   primary = "#803025",    
-#   base_font = font_google("Ubuntu"),
-#   heading_font = font_google("Merriweather"),
-#   code_font = font_google("Fira Code")
-# )
-# 
-# custom_theme <- bs_add_rules(custom_theme, "
-#   .navbar {
-#     background-color: #f6f !important;
-#   }
-#   .navbar .navbar-brand,
-#   .navbar-nav > li > a {
-#     color: #f3ede6 !important;
-#   }
-#   body, .container-fluid {
-#     background-color: #f6f !important;
-#   }
-#   .main-panel, .tab-pane .col-sm-8 {
-#     background-color: #f6f !important;
-#     padding: 20px;
-#     border-radius: 8px;
-#   }
-# ")
 
 # Reading in data and creating function for map
-
+feb19 <- read_csv("data/cleaned-data/combined-clean/feb19-clean.csv")
 feb27 <- read_csv("data/cleaned-data/combined-clean/feb27-clean.csv")
 mar06 <- read_csv("data/cleaned-data/combined-clean/mar06-clean.csv")
 mar13 <- read_csv("data/cleaned-data/combined-clean/mar13-clean.csv")
@@ -54,33 +25,34 @@ mapping <- function(combined_data, title) {
   # Making it spatial
   combined_data <- st_as_sf(combined_data, coords = c("location_longitude", "location_latitude"), crs = 4326)
   
-  # Leaflet map with Y accelerometer val
-  
+  # legend details
   labels <- c("Comfortable (0 - 0.315)", "Fairly Uncomfortable (0.315 - 1.6)", "Uncomfortable (1.6 - 2)", "Extreme Discomfort (2+)")
   bins <- c(0, 0.315, 1.6, 2.0, 4)
   
-  pal <- colorBin(
+  pal <- colorBin( # creating palette for map and legend
     palette = brewer.pal(4, "Reds"),
     domain = c(0, 2.5),
     bins = bins,
     na.color = "#ccc"
   )
   
-  combined_data$comfort_level <- cut(
+  combined_data$comfort_level <- cut( # creating new variable called comfort level to make the legend breaks
     combined_data$L2_norm,
     breaks = c(-Inf, 0.315, 1.6, 2.0, Inf),
     labels = c("Comfortable", "Fairly Uncomfortable", "Uncomfortable", "Extreme Discomfort"),
     right = TRUE
   )
   
+  # Leaflet map with magnitude of acceleration
   map <- leaflet(combined_data, options = leafletOptions(zoomControl = TRUE)) %>%
-    addProviderTiles("CartoDB.Positron") %>%
-    addCircles(
+    addProviderTiles("CartoDB.Positron") %>% #ESRI basemap
+    addCircles( # adding points from recording
       radius = 1,
-      color = ~pal(L2_norm),
+      color = ~pal(L2_norm), # using palette made before
       weight = 5,
       opacity = 0.9,
       popup = ~paste0("<b>", comfort_level, "</b>",
+                      "<br>", street_name,
                       "<br>Magnitude of Acceleration: ", round(L2_norm, 2))
     ) %>%
     
@@ -186,6 +158,7 @@ ui <- fluidPage(
                    inputId = "date_choice",
                    label = "Choose a date:",
                    choices = c(
+                     "February 19th" = "feb19",
                      "February 27th" = "feb27",
                      "March 6th" = "mar06",
                      "March 13th" = "mar13",
@@ -193,7 +166,7 @@ ui <- fluidPage(
                      "March 27th" = "mar27",
                      "April 3rd" = "apr03"
                    ),
-                   selected = "feb27"
+                   selected = "feb19"
                  )
                ),
                mainPanel(
@@ -220,6 +193,7 @@ ui <- fluidPage(
 server <- function(input, output) {
 
   dataset_list <- list(
+    feb19 = feb19,
     feb27 = feb27,
     mar06 = mar06,
     mar13 = mar13,
@@ -229,6 +203,7 @@ server <- function(input, output) {
   )
   
   date_titles <- c(
+    feb19 = "February 19th",
     feb27 = "February 27th",
     mar06 = "March 6th",
     mar13 = "March 13th",
