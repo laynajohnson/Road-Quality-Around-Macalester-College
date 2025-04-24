@@ -43,20 +43,64 @@ apr03 <- read_csv("data/cleaned-data/combined-clean/apr03-clean.csv")
 ```
 
 
+
 # Time Series Viz
 
 ```{r}
-feb27_time <- ggplot(feb27, aes(x = location_local_time, y = L2_norm, group = 1)) +
-  geom_line(aes(text = paste("<br>Mag of Accel:", L2_norm)), alpha = 1, color = "firebrick") +
+feb27_time <- ggplot(feb27, aes(x = location_local_time, y = L2_norm, group = street_name)) +
+  geom_line(aes(text = paste(street_name, "<br>Mag of Accel:", L2_norm)), alpha = 1, color = "firebrick") +
   labs(title = "February 27th Magnitude of Acceleration Around Macalester College", x = "Time", y = "Magnitude of Acceleration") +
   theme_minimal()
-  # + scale_alpha_identity()
 
 
 feb27_time_plotly <- ggplotly(feb27_time, tooltip = "text") %>%
   layout(hovermode = "x unified")
 
 feb27_time_plotly
+```
+
+
+```{r}
+feb27$base_street <- case_when(
+  str_detect(feb27$street_name, "Snelling Avenue") ~ "Snelling Avenue",
+  str_detect(feb27$street_name, "Grand Avenue") ~ "Grand Avenue",
+  str_detect(feb27$street_name, "Fairview Avenue") ~ "Fairview Avenue",
+  str_detect(feb27$street_name, "St. Clair Avenue") ~ "St. Clair Avenue",
+  str_detect(feb27$street_name, "Summit Avenue") ~ "Summit Avenue",
+  str_detect(feb27$street_name, "Macalester Street") ~ "Macalester Street",
+  str_detect(feb27$street_name, "Vernon and Cambridge") ~ "Vernon and Cambridge",
+  str_detect(feb27$street_name, "Lincoln Avenue") ~ "Lincoln Avenue",
+  TRUE ~ "Other"
+)
+
+street_counts <- feb27 %>%
+  distinct(base_street, street_name) %>%
+  count(base_street, name = "line_count")
+
+feb27_colored <- feb27 %>%
+  left_join(street_counts, by = "base_street") %>%
+  group_by(base_street) %>%
+  mutate(color = if (first(line_count) == 1) {
+    "firebrick"
+  } else {
+    shades <- colorRampPalette(c("#fcae91", "#990000"))(n_distinct(street_name))
+    shades[as.numeric(factor(street_name))]
+  }) %>%
+  ungroup()
+
+p <- ggplot(feb27_colored, aes(x = seconds_elapsed, y = L2_norm, group = street_name)) +
+  geom_line(aes(color = color, text = paste(street_name, "<br>Mag of Accel:", round(L2_norm, 2))), alpha = 0.8, show.legend = FALSE) +
+  scale_color_identity() +  # this uses actual hex codes from the 'color' column
+  facet_wrap(~ base_street, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Magnitude of Acceleration by Street and Direction",
+    x = "Time",
+    y = "Acceleration Magnitude"
+  )
+
+ggplotly(p, tooltip = "text")%>%
+  layout(hovermode = "x unified")
 ```
 
 
@@ -159,5 +203,39 @@ mapping(mar27, "March 27th")
 mapping(apr03, "April 3rd")
 ```
 
-filling map, moving title legend 
-label street in popup
+```{r}
+#| message: false
+environment_data <- read_csv("data/cleaned-data/environment-data.csv")
+
+environment_data$date <- as.Date(environment_data$date, format = "%m-%d-%Y")
+
+env_long <- environment_data %>%
+  pivot_longer(cols = c(high_tempW, high_tempD, low_tempW, low_tempD),
+               names_to = "temp_type",
+               values_to = "temp") %>%
+  mutate(
+    category = case_when(
+      temp_type == "high_tempW" ~ "High Temp (Weekly)",
+      temp_type == "high_tempD" ~ "High Temp (Daily)",
+      temp_type == "low_tempW"  ~ "Low Temp (Weekly)",
+      temp_type == "low_tempD"  ~ "Low Temp (Daily)"
+    )
+  )
+
+color_map <- c(
+  "High Temp (Weekly)" = "#B22222",  
+  "High Temp (Daily)"  = "#E57373",  
+  "Low Temp (Weekly)"  = "#505050",  
+  "Low Temp (Daily)"   = "#B0B0B0")  
+
+ggplot(env_long, aes(x = date, y = temp, color = category)) +
+  geom_line() +
+  geom_point() +
+  scale_color_manual(values = color_map) +
+  theme_minimal() +
+  labs(
+    color = "Temperature Type",
+    x = "Date",
+    y = "Temperature (°F)"
+  )
+```

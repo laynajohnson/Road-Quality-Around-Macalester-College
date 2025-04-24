@@ -294,7 +294,7 @@ lincoln7 <- read_csv("data/raw-data/apr03-raw/1814_Lincoln_Ave-2025-3-4_10-41-28
 ```
 
 
-Improving previous function
+### Improving previous function
 
 ```{r}
 # Function to label streets and combine datasets
@@ -316,8 +316,8 @@ label_and_combine <- function(dataset_list, name_prefix) {
       str_detect(name, "snelling_south_north_left") ~ "Snelling Avenue North L",
       str_detect(name, "fairview_north_south") ~ "Fairview Avenue South",
       str_detect(name, "fairview_south_north") ~ "Fairview Avenue North",
-      str_detect(name, "saintclair_north_south") ~ "St. Clair Avenue South",
-      str_detect(name, "saintclair_south_north") ~ "St. Clair Avenue North",
+      str_detect(name, "saintclair_east_west") ~ "St. Clair Avenue West",
+      str_detect(name, "saintclair_west_east") ~ "St. Clair Avenue East",
       str_detect(name, "summit_east_west_side") ~ "Summit Avenue West S",
       str_detect(name, "summit_west_east_side") ~ "Summit Avenue East S",
       str_detect(name, "summit_east_west") ~ "Summit Avenue West",
@@ -362,7 +362,7 @@ label_and_combine <- function(dataset_list, name_prefix) {
 ```
 
 
-## Visualizations
+## Visualizations and related code
 
 ```{r}
 # function to take teh lists from below and make their names the same as the input in order to use them for the function before
@@ -372,6 +372,7 @@ name_list <- function(...) {
 }
 ```
 
+Making lists of datasets loaded in and named before
 
 ```{r lists-of-data}
 # Creating lists of data sets to combine
@@ -557,57 +558,14 @@ roads <- st_transform(roads, crs = 4326)
 
 leaflet() %>%
   addProviderTiles("CartoDB.Positron") %>%
-  addPolylines(data = roads)
-
-```
-
-```{r}
-library(sfdep)
-
-feb27_combined <- tibble::rowid_to_column(feb27_combined, "ID") # creating arbitrary id column
-
-time_period <- 1
-
-feb27_combined <- cbind(feb27_combined, time_period)
-
-new_data <- as_spacetime(feb19_combined, "ID", "time_period")
-```
-
-```{r}
-
-process_datasets <- function(dataset_list) {
-  id_counter <- 1
-  time_period <- 1
-  processed_list <- list()
-  
-  for (i in seq_along(dataset_list)) {
-    df <- dataset_list[[i]]
-        df <- df %>%
-      mutate(ID = id_counter:(id_counter + nrow(df) - 1)) # creating unique ids for all observations
-        df <- cbind(df, time_period) # each df has its own time period
-    
-    df_spacetime <- as_spacetime(df, "ID", "time_period") # spacetime object
-    
-    processed_list[[i]] <- df_spacetime
-    
-    id_counter <- id_counter + nrow(df)
-    time_period <- time_period + 1
-  }
-  
-  return(processed_list)
-}
-
-dataset_list <- list(feb27_combined, mar06_combined, mar13_combined, mar20_combined)
-processed_data <- process_datasets(dataset_list)
+  addPolylines(data = roads,
+               color = "firebrick")
 
 ```
 
 
 
 
-```{r}
-library(sqldf)
 
-sqldf
-```
+
 
