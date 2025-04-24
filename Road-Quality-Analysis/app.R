@@ -274,11 +274,21 @@ ui <- fluidPage(
                       mainPanel(width = 12,
                         h1("--"),
                         h2("Data Visualization"),
-                        p("These visualizations will show trends and changes over time graphically. There are two main areas of focus for these visualizations: to represent road conditions over time and conditions over space and time. The variables to be used for these visualizations include acceleration, time, and location."),
+                        p("These visualizations will show trends and changes over time graphically. There are two main areas of focus for these visualizations: to represent road conditions over time and conditions over space and time. The variables to be used for these visualizations include acceleration, time, and location. You can view these visualizations in the next two tabs."),
                         withMathJax(p("Throught these visualizations, we seek to answer our research question in an exploratory fashion: How do road quality conditions vary around Macalester College as winter transitions into spring? As a proxy to road conditions, we can calculate the smoothed acceleration magnitude of our data. This involves taking the magnitude of our \\(X\\), \\(Y\\), and \\(Z\\) acceleration values in \\(m/s^2\\) as, $$\\|{v}\\|_2 = \\sqrt{X^2 + Y^2 + Z^2}$$ (also called the Euclidean norm) and compute the rolling average of the magnitude values over time. We can learn about the magnitude of acceleration at each point independent of the direction of acceleration. This will help to understand events with significant acceleration in one or more directions and quiets some of the noise from measuring errors.")),
                         h3("Spatial Visualization"),
+                        p("For spatial visualization, we created maps which show the magnitude of acceleration values as described before broken into categories using the international ISO 2631-1 Standard defining levels of comfort:"),
+                        withMathJax(p("\\(\\|v\\|< 0.315 m/s^2\\) as being comfortable,  \\(0.315m/s^2 < \\|v\\| < 0.8 m/s^2\\) as fairly comfortable, \\(0.8m/s^2 < \\|v\\| < 1.6 m/s^2\\) as uncomfortable and \\(\\|v\\| > 2 m/s^2\\) being extremely uncomfortable.")),
+                        p("The maps visualized in the next section represent the different time periods of collection in the study. There are seven different maps of all roads* which visualize discrete measures of the magnitude of acceleration at each second interval of recording."),
+                        p("*Recording for March 20th is missing the recording for Snelling Avenue North in the right lane. This is due to failure to record this segment."),
                         h3("Time Series Visualization"),
-                        h3("Additional Visualizatiom"),
+                        p("To go along with the spatial visualizations, we created several line charts to further show this idea of magnitude of acceleration. The line charts take the x-axis to be the time elapsed as driving, or, the number of seconds since the start of the recording. There are 8 main streets the study takes place in, 
+                          and a number of different directions and lanes for different roads. These plots look like one line chart for each base street, then if there are multiple directions and/or lanes these are included all in the same plot in different colors. 
+                          Roads that have distinct lanes with dashed or solid line separations were driven on in both directions. Streets which had no dividing lines were driven on in one direction mostly down the center due to traffic (and lack thereof) and parked cars.
+                          For example, Snelling Avenue has North and South traveling directions as well as left and right lanes for both, while Lincoln Avenue had one direction for recording. The plot with the label of Snelling Ave will have four lines in different 
+                          colors while the Lincoln Avenue plot will have one line representing the need for only one direction to be driven."),
+                        p("The y-axis of these line charts show the same magnitude of acceleration values shown in the map above. "),
+                        h3("Additional Visualization"),
                         h2("Statistical Summaries")
                       )
                )
