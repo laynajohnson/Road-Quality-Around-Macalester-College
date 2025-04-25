@@ -287,8 +287,11 @@ ui <- fluidPage(
                           Roads that have distinct lanes with dashed or solid line separations were driven on in both directions. Streets which had no dividing lines were driven on in one direction mostly down the center due to traffic (and lack thereof) and parked cars.
                           For example, Snelling Avenue has North and South traveling directions as well as left and right lanes for both, while Lincoln Avenue had one direction for recording. The plot with the label of Snelling Ave will have four lines in different 
                           colors while the Lincoln Avenue plot will have one line representing the need for only one direction to be driven."),
-                        p("The y-axis of these line charts show the same magnitude of acceleration values shown in the map above. "),
+                        p("The y-axis of these line charts show the same magnitude of acceleration values shown in the map above. These plots make viewing general trends for each road over time easier. Combined with the spatial visualization, a user can get a more complete view
+                          and understanding of the road conditions for the roads around Macalester."),
                         h3("Additional Visualization"),
+                        p("In the implications tab, you can find an additional visualization which helps to contextualize the road conditions during some week along with the temperature highs and lows. The freeze-thaw cycle....."),
+                        p("This line chart shows the dialy and weekly highs and lows for the days we recorded our accelerometer and location data. "), 
                         h2("Statistical Summaries")
                       )
                )

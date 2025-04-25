@@ -34,6 +34,7 @@ library(htmltools)
 
 ```{r}
 #| message: false
+feb19 <- read_csv("data/cleaned-data/combined-clean/feb19-clean.csv")
 feb27 <- read_csv("data/cleaned-data/combined-clean/feb27-clean.csv")
 mar06 <- read_csv("data/cleaned-data/combined-clean/mar06-clean.csv")
 mar13 <- read_csv("data/cleaned-data/combined-clean/mar13-clean.csv")
@@ -46,65 +47,81 @@ apr03 <- read_csv("data/cleaned-data/combined-clean/apr03-clean.csv")
 
 # Time Series Viz
 
+Code for the time series visualization to be used in the Shiny app. View the application code to see implementation of function to plug in each dataset and any other final details.
+
 ```{r}
-feb27_time <- ggplot(feb27, aes(x = location_local_time, y = L2_norm, group = street_name)) +
-  geom_line(aes(text = paste(street_name, "<br>Mag of Accel:", L2_norm)), alpha = 1, color = "firebrick") +
-  labs(title = "February 27th Magnitude of Acceleration Around Macalester College", x = "Time", y = "Magnitude of Acceleration") +
-  theme_minimal()
-
-
-feb27_time_plotly <- ggplotly(feb27_time, tooltip = "text") %>%
-  layout(hovermode = "x unified")
-
-feb27_time_plotly
+process_and_plot <- function(df, plot_title) {
+  # Create base_street
+  df$base_street <- case_when(
+    str_detect(df$street_name, "Snelling Avenue") ~ "Snelling Avenue",
+    str_detect(df$street_name, "Grand Avenue") ~ "Grand Avenue",
+    str_detect(df$street_name, "Fairview Avenue") ~ "Fairview Avenue",
+    str_detect(df$street_name, "St. Clair Avenue") ~ "St. Clair Avenue",
+    str_detect(df$street_name, "Summit Avenue") ~ "Summit Avenue",
+    str_detect(df$street_name, "Macalester Street") ~ "Macalester Street",
+    str_detect(df$street_name, "Vernon and Cambridge") ~ "Vernon and Cambridge",
+    str_detect(df$street_name, "Lincoln Avenue") ~ "Lincoln Avenue",
+    TRUE ~ "Other"
+  )
+  
+  # Count how many lines per base_street (the street without direction or lane)
+  street_counts <- df %>%
+    distinct(base_street, street_name) %>%
+    count(base_street, name = "line_count")
+  
+  # Add color to the data
+  df_colored <- df %>%
+    left_join(street_counts, by = "base_street") %>%
+    group_by(base_street) %>%
+    mutate(color = if (first(line_count) == 1) {
+      "firebrick"
+    } else {
+      shades <- colorRampPalette(c("#fcae91", "#990000"))(n_distinct(street_name))
+      shades[as.numeric(factor(street_name))]
+    }) %>%
+    ungroup()
+  
+  # Create plot of acceleration magnitude
+  p <- ggplot(df_colored, aes(x = seconds_elapsed, y = L2_norm, group = street_name)) +
+    geom_line(aes(color = color, text = paste0(street_name, "<br> Mag of Acceleration: ", round(L2_norm, 2))),
+              alpha = 0.8, show.legend = FALSE) +
+    scale_color_identity() +
+    facet_wrap(~ base_street, scales = "free_x", ncol = 2) +
+    theme_minimal() +
+    theme(legend.position = "none") + 
+    labs(
+      title = paste("Magnitude of Acceleration on", plot_title),
+      x = "Time",
+      y = "Acceleration Magnitude"
+    )
+  
+  ggplotly(p, tooltip = "text") %>%
+    layout(hovermode = "x unified",
+           hoverlabel = list(
+             font = list(
+               size = 12)
+               )
+           )
+  
+return(df_colored)
+}
 ```
 
 
 ```{r}
-feb27$base_street <- case_when(
-  str_detect(feb27$street_name, "Snelling Avenue") ~ "Snelling Avenue",
-  str_detect(feb27$street_name, "Grand Avenue") ~ "Grand Avenue",
-  str_detect(feb27$street_name, "Fairview Avenue") ~ "Fairview Avenue",
-  str_detect(feb27$street_name, "St. Clair Avenue") ~ "St. Clair Avenue",
-  str_detect(feb27$street_name, "Summit Avenue") ~ "Summit Avenue",
-  str_detect(feb27$street_name, "Macalester Street") ~ "Macalester Street",
-  str_detect(feb27$street_name, "Vernon and Cambridge") ~ "Vernon and Cambridge",
-  str_detect(feb27$street_name, "Lincoln Avenue") ~ "Lincoln Avenue",
-  TRUE ~ "Other"
-)
-
-street_counts <- feb27 %>%
-  distinct(base_street, street_name) %>%
-  count(base_street, name = "line_count")
-
-feb27_colored <- feb27 %>%
-  left_join(street_counts, by = "base_street") %>%
-  group_by(base_street) %>%
-  mutate(color = if (first(line_count) == 1) {
-    "firebrick"
-  } else {
-    shades <- colorRampPalette(c("#fcae91", "#990000"))(n_distinct(street_name))
-    shades[as.numeric(factor(street_name))]
-  }) %>%
-  ungroup()
-
-p <- ggplot(feb27_colored, aes(x = seconds_elapsed, y = L2_norm, group = street_name)) +
-  geom_line(aes(color = color, text = paste(street_name, "<br>Mag of Accel:", round(L2_norm, 2))), alpha = 0.8, show.legend = FALSE) +
-  scale_color_identity() +  # this uses actual hex codes from the 'color' column
-  facet_wrap(~ base_street, scales = "free_x") +
-  theme_minimal() +
-  labs(
-    title = "Magnitude of Acceleration by Street and Direction",
-    x = "Time",
-    y = "Acceleration Magnitude"
-  )
-
-ggplotly(p, tooltip = "text")%>%
-  layout(hovermode = "x unified")
+feb19 <- process_and_plot(feb19, "February 19th")
+feb27 <- process_and_plot(feb27, "February 27th")
+mar06 <- process_and_plot(mar06, "March 6th")
+mar13 <- process_and_plot(mar13, "March 13th")
+mar20 <- process_and_plot(mar20, "March 20th")
+mar27 <- process_and_plot(mar27, "March 27th")
+apr03 <- process_and_plot(apr03, "April 3rd")
 ```
 
 
 # Spatial Viz
+
+This visualization also represents what the map looked like mostly completed. View the shiny app and corresponding code to see final product.
 
 ```{r}
 mapping <- function(combined_data, title) {
@@ -194,7 +211,7 @@ mapping <- function(combined_data, title) {
 ```
 
 ```{r}
-
+mapping(feb19, "February 19th")
 mapping(feb27, "February 27th")
 mapping(mar06, "March 6th")
 mapping(mar13, "March 13th")
@@ -202,6 +219,10 @@ mapping(mar20, "March 20th")
 mapping(mar27, "March 27th")
 mapping(apr03, "April 3rd")
 ```
+
+# Additional Viz
+
+This visual shows the daily and weekly highs and lows for our days of recording. Check shiny application code for final details.
 
 ```{r}
 #| message: false
@@ -239,3 +260,29 @@ ggplot(env_long, aes(x = date, y = temp, color = category)) +
     y = "Temperature (°F)"
   )
 ```
+
+
+# Statistical Summaries
+
+```{r}
+
+L2_norm_table <- function(df) {
+  df %>%
+    group_by(base_street) %>%
+    summarise(
+      times_uncomfortable = sum(L2_norm > 1.6, na.rm = TRUE),
+      max_L2_norm = max(L2_norm, na.rm = TRUE),
+      avg_disc = mean(L2_norm, na.rm = TRUE)
+    ) 
+  }
+
+L2_norm_table(feb19)
+L2_norm_table(feb27)
+L2_norm_table(mar06)
+L2_norm_table(mar13)
+L2_norm_table(mar20)
+L2_norm_table(mar27)
+L2_norm_table(apr03)
+
+```
+
