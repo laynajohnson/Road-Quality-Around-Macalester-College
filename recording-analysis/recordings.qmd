@@ -362,10 +362,11 @@ label_and_combine <- function(dataset_list, name_prefix) {
 ```
 
 
+
 ## Visualizations and related code
 
 ```{r}
-# function to take teh lists from below and make their names the same as the input in order to use them for the function before
+# function to take the lists from below and make their names the same as the input in order to use them for the function before
 name_list <- function(...) {
   args <- substitute(list(...))[-1]
   setNames(list(...), sapply(args, deparse))
@@ -476,6 +477,59 @@ label_and_combine(apr03_recs, "apr03")
 
 ```
 
+
+```{r}
+process_accel_data <- function(df, name_prefix) {
+  # Create the base_street column
+  df$base_street <- case_when(
+    str_detect(df$street_name, "Snelling Avenue") ~ "Snelling Avenue",
+    str_detect(df$street_name, "Grand Avenue") ~ "Grand Avenue",
+    str_detect(df$street_name, "Fairview Avenue") ~ "Fairview Avenue",
+    str_detect(df$street_name, "St. Clair Avenue") ~ "St. Clair Avenue",
+    str_detect(df$street_name, "Summit Avenue") ~ "Summit Avenue",
+    str_detect(df$street_name, "Macalester Street") ~ "Macalester Street",
+    str_detect(df$street_name, "Vernon and Cambridge") ~ "Vernon and Cambridge",
+    str_detect(df$street_name, "Lincoln Avenue") ~ "Lincoln Avenue",
+    TRUE ~ "Other"
+  )
+  
+  # Calculate line count for each street to assign colors for mag of accel plots
+  street_counts <- df %>%
+    distinct(base_street, street_name) %>%
+    count(base_street, name = "line_count")
+  
+  combined_data <- df %>%
+    left_join(street_counts, by = "base_street") %>%
+    group_by(base_street) %>%
+    mutate(
+      color = if (first(line_count) == 1) {
+        "firebrick"
+      } else {
+        shades <- colorRampPalette(c("#fcae91", "#990000"))(n_distinct(street_name))
+        shades[as.numeric(factor(street_name))]
+      }
+    ) %>%
+    ungroup()
+  
+  assign(paste0(name_prefix, "_combined"), combined_data, envir = .GlobalEnv)
+  
+  return(combined_data)
+}
+
+```
+
+```{r}
+process_accel_data(feb19_combined, "feb19")
+process_accel_data(feb27_combined, "feb27")
+process_accel_data(mar06_combined, "mar06")
+process_accel_data(mar13_combined, "mar13")
+process_accel_data(mar20_combined, "mar20")
+process_accel_data(mar27_combined, "mar27")
+process_accel_data(apr03_combined, "apr03")
+
+```
+
+
 ```{r eval = FALSE}
 # saving csv created from function in cleaned data. Only needs to be done once
 write_csv(feb19_combined, "data/cleaned-data/combined-clean/feb19-clean.csv")
@@ -489,6 +543,7 @@ write_csv(apr03_combined, "data/cleaned-data/combined-clean/apr03-clean.csv")
 ```
 
 
+### Saving individual segment recordings separately
 ```{r}
 save_cleaned_csvs <- function(dataset_list, folder_path = "data/cleaned-data/separate-clean") {
   # making sure the folder path exists

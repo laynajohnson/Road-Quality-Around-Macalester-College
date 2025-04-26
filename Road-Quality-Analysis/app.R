@@ -10,6 +10,7 @@ library(sf)
 library(leaflet)
 library(RColorBrewer)
 library(htmltools)
+library(gt)
 
 
 # Reading data and transforming for line map of roads (the data section in app)
@@ -19,13 +20,11 @@ roads <- st_transform(roads, crs = 4326)
 
 
 # Reading in data and creating function for map
-feb19 <- read_csv("data/cleaned-data/combined-clean/feb19-clean.csv")
-feb27 <- read_csv("data/cleaned-data/combined-clean/feb27-clean.csv")
-mar06 <- read_csv("data/cleaned-data/combined-clean/mar06-clean.csv")
-mar13 <- read_csv("data/cleaned-data/combined-clean/mar13-clean.csv")
-mar20 <- read_csv("data/cleaned-data/combined-clean/mar20-clean.csv")
-mar27 <- read_csv("data/cleaned-data/combined-clean/mar27-clean.csv")
-apr03 <- read_csv("data/cleaned-data/combined-clean/apr03-clean.csv")
+dates <- c("feb19", "feb27", "mar06", "mar13", "mar20", "mar27", "apr03")
+dataset_list <- setNames(
+  lapply(dates, function(d) read_csv(paste0("data/cleaned-data/combined-clean/", d, "-clean.csv"))),
+  dates
+)
 
 mapping <- function(combined_data, title) {
   # Making it spatial
@@ -139,40 +138,10 @@ color_map <- c(
   "Daily Low"   = "#b3c4e3")  
 
 
-# Creating the Rolling Magnitude graph with a function
+# Creating the Rolling Magnitude graph with two functions
 
-process_and_plot <- function(df, plot_title) {
-  # Create base_street
-  df$base_street <- case_when(
-    str_detect(df$street_name, "Snelling Avenue") ~ "Snelling Avenue",
-    str_detect(df$street_name, "Grand Avenue") ~ "Grand Avenue",
-    str_detect(df$street_name, "Fairview Avenue") ~ "Fairview Avenue",
-    str_detect(df$street_name, "St. Clair Avenue") ~ "St. Clair Avenue",
-    str_detect(df$street_name, "Summit Avenue") ~ "Summit Avenue",
-    str_detect(df$street_name, "Macalester Street") ~ "Macalester Street",
-    str_detect(df$street_name, "Vernon and Cambridge") ~ "Vernon and Cambridge",
-    str_detect(df$street_name, "Lincoln Avenue") ~ "Lincoln Avenue",
-    TRUE ~ "Other"
-  )
-  
-  # Count how many lines per base_street (the street without direction or lane)
-  street_counts <- df %>%
-    distinct(base_street, street_name) %>%
-    count(base_street, name = "line_count")
-  
-  # Add color to the data
-  df_colored <- df %>%
-    left_join(street_counts, by = "base_street") %>%
-    group_by(base_street) %>%
-    mutate(color = if (first(line_count) == 1) {
-      "firebrick"
-    } else {
-      shades <- colorRampPalette(c("#fcae91", "#990000"))(n_distinct(street_name))
-      shades[as.numeric(factor(street_name))]
-    }) %>%
-    ungroup()
-  
-  # Create plot of acceleration magnitude
+
+plot_accel <- function(df_colored, plot_title) {
   p <- ggplot(df_colored, aes(x = seconds_elapsed, y = L2_norm, group = street_name)) +
     geom_line(aes(color = color, text = paste0(street_name, "<br> Mag of Acceleration: ", round(L2_norm, 2))),
               alpha = 0.8, show.legend = FALSE) +
@@ -186,13 +155,74 @@ process_and_plot <- function(df, plot_title) {
       y = "Acceleration Magnitude"
     )
   
-  ggplotly(p, tooltip = "text") %>%
-    layout(hovermode = "x unified",
-           hoverlabel = list(
-             font = list(
-               size = 12)
-               )
-           )
+  return(ggplotly(p, tooltip = "text") %>%
+           layout(
+             hovermode = "x unified",
+             hoverlabel = list(font = list(size = 12))
+           ))
+}
+
+
+# Summary tables
+
+summarize_l2 <- function(df) {
+  df %>%
+    group_by(base_street) %>%
+    summarise(
+      times_uncomfortable = sum(L2_norm > 1.6, na.rm = TRUE),
+      max_L2_norm = round(max(L2_norm, na.rm = TRUE), 2),
+      avg_disc = round(mean(L2_norm, na.rm = TRUE), 2),
+      .groups = "drop"
+    )
+}
+
+summary_list <- list(
+  feb19 = summarize_l2(feb19),
+  feb27 = summarize_l2(feb27),
+  mar06 = summarize_l2(mar06),
+  mar13 = summarize_l2(mar13),
+  mar20 = summarize_l2(mar20),
+  mar27 = summarize_l2(mar27),
+  apr03 = summarize_l2(apr03)
+)
+
+
+combine_variable_across_dates <- function(var_name) {
+  map(summary_list, ~ select(.x, base_street, !!sym(var_name))) %>%
+    reduce(full_join, by = "base_street") %>%
+    arrange(base_street) %>%
+    rename_with(~ names(summary_list), -base_street)
+}
+
+var_labels <- list(
+  "times_uncomfortable" = "Number of Times Uncomfortable",
+  "max_L2_norm" = "Highest Magnitude of Acceleration",
+  "avg_disc" = "Average Magnitude of Acceleration"
+)
+
+select_labels <- c(
+  "Discomfort" = "times_uncomfortable",
+  "Highest Acceleration" = "max_L2_norm",
+  "Average Acceleration" = "avg_disc"
+)
+
+render_gt_table <- function(df, var_name) {
+  gt_tbl <- df %>% gt(rowname_col = "base_street")
+  
+  # Apply blue heatmap to all variables
+  gt_tbl <- gt_tbl %>%
+    data_color(
+      columns = everything(),
+      colors = scales::col_numeric(
+        palette = c("white", "#3182bd"),
+        domain = range(df[-1], na.rm = TRUE)
+      )
+    )
+  
+  gt_tbl %>%
+    tab_header(
+      title = var_labels[[var_name]]
+    )
 }
 
 
@@ -292,7 +322,8 @@ ui <- fluidPage(
                         h3("Additional Visualization"),
                         p("In the implications tab, you can find an additional visualization which helps to contextualize the road conditions during some week along with the temperature highs and lows. The freeze-thaw cycle....."),
                         p("This line chart shows the dialy and weekly highs and lows for the days we recorded our accelerometer and location data. "), 
-                        h2("Statistical Summaries")
+                        h2("Statistical Summaries"),
+                        p("Statistical summaries for our research include the ")
                       )
                )
                      )
@@ -338,10 +369,18 @@ ui <- fluidPage(
              sidebarLayout(
                sidebarPanel(
                  width = 3,
+                 selectInput(
+                   inputId = "metric_choice",
+                   label = "Select Variable:",
+                   choices = select_labels
+                 ),
                ),
                mainPanel(
                  fluidRow(
                    column(width = 7, plotlyOutput("temp_graph", height = "250px"))
+                 ),
+                 fluidRow(
+                   column(width = 10, gt_output("summary_table"))
                  )
                )
              ))
@@ -451,13 +490,26 @@ server <- function(input, output) {
   })
   
   output$accel_plot <- renderPlotly({
-    req(input$date_choice)
-    selected_data <- dataset_list[[input$date_choice]]
-    selected_title <- date_titles[[input$date_choice]]
-    
-    process_and_plot(selected_data, selected_title)
+  req(input$date_choice)
+  selected_data <- dataset_list[[input$date_choice]]
+  selected_title <- date_titles[[input$date_choice]]
+
+  plot_accel(selected_data, selected_title)
+})
+  
+  # output$summary_table <- render_gt({
+  #   req(input$metric_choice)
+  #   df <- combine_variable_across_dates(input$metric_choice)
+  #   render_gt_table(df, input$metric_choice)
+  # })
+  
+  output$summary_table <- render_gt({
+    req(input$metric_choice)
+    df <- combine_variable_across_dates(input$metric_choice)
+    render_gt_table(df, input$metric_choice)
   })
 }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)

@@ -1,0 +1,93 @@
+Variable,Description,Usage,From,Data
+seconds_elapsed,Time (in seconds) since the start of the recording,Helpful to detect which direction traveled for naming datasets,Sensor Logger recordings,combined clean
+location_local_time,Date-time object containing the date and exact time of each point in the recording,"For time series graphs, order",Sensor Logger recordings,combined clean
+accelerometer_x_new,"Acceleration in the x direction, left and right. Adjusted to represent positive values as right and negative as left",Used to calculate L2 norm along with Y and Z acceleration,Transformed variable originally from Sensor Logger recordings,combined clean
+accelerometer_y_new,"Acceleration in the y direction, up and down. Adjusted to represent positive values as up and negative values as down",Used to calculate L2 norm along with X and Z acceleration,Transformed variable originally from Sensor Logger recordings,combined clean
+accelerometer_z,"Acceleration in the z direction, forward and backward. Represents positive values as forward and negative values as backward",Used to calculate L2 norm along with x and Y acceleration,Sensor Logger recordings,combined clean
+L2_norm,"Magnitude of acceleration. Calculated using L2_norm = sqrt(x^2 + y^2 + z^2) where x, y, and z are the directions of acceleration",One way to represent road quality. Includes all acceleration changes regardless of direction into one measurement,New variable from other transformed and non transformed variables originally from Sensor Logger recordings,combined clean
+street_name,"Name of the street that the line represents. Naming conventions are as follows: Name of street + Direction. For Snelling Ave which has lanes, right lane is R and left lane is L. For Summit Ave that has side streets in either direction, S stands for side street. These specifications are added to the end of original naming convention if necessary",Created for popup in leaflet map showing magnitude of acceleration,Created using data naming conventions from test mapping each individual recording to check which street. Test mapping code can be found in the recordings.qmd file,combined clean
+base_street,"Name of the ""base street"" the line represents. Using the street_name variable naming conventions, this variable will take only the Name of street part as the variable. This way we have a variable that stores the names non-directionally for easy grouping.","Created for magnitude of acceleration line charts. Instead of having 17 separate charts for each segment measured, each direction and/or lane for a street is in one graph with different colored lines to differentiate. This reduces number of individual charts to 8 for easier viewing. Also used for summary tables in order to see general trends for each base street.",Created using first part of naming convention for street_name variable created from original data,combined clean
+line_count,Number of lines for magnitude of acceleration line chart to determine number of colors needed in one plot for each line to be different color. Based on number of same base_streets in one time,Used for colors in magnitude of acceleration line charts,Created using counts of base_streets per time of recording,combined clean
+color,"Red color for lines, stored as hex values",Used for colors in magnitude of acceleration line charts,Dependent on variables line_count and base_street,combined clean
+geometry,Spatial aspect of the data. Explains the data is points and gives spatial details for mapping,For mapping the data,New variable from latitude and longitude from Sensor Logger recordings raw data,combined clean
+Shape_Leng,The length of each line,For mapping the data,Lines created in ArcGIS Pro by creating line layer shapefile,road lines
+street_nam,Name of the street that the line represents. Naming conventions are as follows: name_direction,Identify which street the lines represent,Lines created in ArcGIS Pro by creating line layer shapefile,road lines
+geometry,Spatial aspect of the data. Explains the data is lines and gives spatial details for mapping,For mapping the data,Lines created in ArcGIS Pro by creating line layer shapefile,road lines
+date,Date of recording as MM-DD-YYY,Graphing date of weather conditions,Self-reported,environment
+road_condition,"Indicating if there was any particular condition to the road such as ice or unplowed snow. Categories include water, snow side, and none",Added in analysis as additional information,Self-reported,environment
+high_tempW,High temperature for the week. A week is defined as the Friday before the recording up to and including the Thursday of recording,"Used in analysis, temp graph",Daily weather for week recorded from https://www.wunderground.com/history/daily/us/mn/fort-snelling/KMSP/date/2025-4-1,environment
+low_tempW,Low temperature for the week. A week is defined as the Friday before the recording up to and including the Thursday of recording,"Used in analysis, temp graph",Daily weather for week recorded from https://www.wunderground.com/history/daily/us/mn/fort-snelling/KMSP/date/2025-4-1,environment
+high_tempD,High temperature for the Thursday of recording (daily),"Used in analysis, temp graph",Daily weather recorded from https://www.wunderground.com/history/daily/us/mn/fort-snelling/KMSP/date/2025-4-1,environment
+low_tempD,Low temperature for the Thursday of recording (daily),"Used in analysis, temp graph",Daily weather recorded from https://www.wunderground.com/history/daily/us/mn/fort-snelling/KMSP/date/2025-4-1,environment
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,, ,,
