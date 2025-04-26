@@ -298,7 +298,8 @@ ui <- fluidPage(
                       ))),
                       p("As the phone measures acceleration values in these directions with the device perpendicular to the ground, it must also sit this direction in the vehicle. The device is properly set up in this fashion in order to ensure consistency in data collection. The phone itself rests in a vent mounted holder that can be adjusted to hold the device perpendicular to the ground. This way, the measures shown in the right image of Figure 2 show the proper directions of acceleration after any transformations."),
                       p("In our analysis, we use several different types of visualizations. Line charts showing the magnitude of acceleration of the vehicle on each road and direction of travel use independent data frames each cleaned similarly as described above. These data frames contain the acceleration, location, and time fields for one recording. For interactive maps, the separate data tables are stacked on top of each other by combining the rows to create a longer table. This way, all point data for the entire route is in one place and can easily be visualized together."),
-                      p("Any potential errant points occur at the start of data collection (time_elapsed = 0), so these points are removed from the data. There is some variation between points between different recording times on the same roads as speed can be different each drive. This kind of variation is not adjusted for, but should be mentioned.")
+                      p("Any potential errant points occur at the start of data collection (time_elapsed = 0), so these points are removed from the data. There is some variation between points between different recording times on the same roads as speed can be different each drive. This kind of variation is not adjusted for, but should be mentioned."),
+                      h1("--")
                    ),
                tabPanel("Behind the Analysis",
                       mainPanel(width = 12,
@@ -323,7 +324,13 @@ ui <- fluidPage(
                         p("In the implications tab, you can find an additional visualization which helps to contextualize the road conditions during some week along with the temperature highs and lows. The freeze-thaw cycle....."),
                         p("This line chart shows the dialy and weekly highs and lows for the days we recorded our accelerometer and location data. "), 
                         h2("Statistical Summaries"),
-                        p("Statistical summaries for our research include the ")
+                        p("Statistical summaries for our research are located in the implications tab. These summary tables show different summaries of road quality for 
+                          the different times and base streest in the analysis. The first selection called 'Discomfort' shows the number of times each base street has a magnitude equal to
+                          or greater than the value for uncomfortable acceleration in meters per second squared (1.6). The next two selections are 'Highest Acceleration'
+                          and 'Average Acceleration' which show the highest magnitude of acceleration and average acceleration per date of recording time and base street.
+                          Each variable selection is colored in a gradient of blues which show the darkest color as the highest value of the selected variable per time and street.
+                          Using these colored tables, one can more easily see some of the trends present in the previous visuals."),
+                        h1("--")
                       )
                )
                      )
@@ -331,7 +338,7 @@ ui <- fluidPage(
                
                ),
     
-    tabPanel("Analysis and Exploration",
+    tabPanel("Data Exploration",
              sidebarLayout(
                sidebarPanel(
                  width = 3,
@@ -365,26 +372,29 @@ ui <- fluidPage(
                )
              )),
     
-    tabPanel("Implications",
-             sidebarLayout(
-               sidebarPanel(
-                 width = 3,
-                 selectInput(
-                   inputId = "metric_choice",
-                   label = "Select Variable:",
-                   choices = select_labels
-                 ),
-               ),
+    tabPanel("Analysis and Implications",
+             
                mainPanel(
                  fluidRow(
-                   column(width = 7, plotlyOutput("temp_graph", height = "250px"))
+                   column(4, 
+                          wellPanel(
+                            h3(""),
+                            h5(em("")),
+                            selectInput(
+                              inputId = "metric_choice",
+                              label = "Select Variable for Table:",
+                              choices = select_labels
+                            )
+                          )
+                   ),
+                   column(width = 8, gt_output("summary_table"))
                  ),
                  fluidRow(
-                   column(width = 10, gt_output("summary_table"))
+                   column(width = 7, plotlyOutput("temp_graph", height = "250px"))
                  )
-               )
+                               )
              ))
-  )
+  
 )
 
 # Define server logic required for all visualizations
