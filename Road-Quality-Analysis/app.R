@@ -255,7 +255,7 @@ ui <- fluidPage(
                       }'))
     ),
     
-    tabPanel("The Project",
+    tabPanel("The Research",
              mainPanel(width = 12,
                        tabsetPanel(
                          tabPanel("Introduction",
@@ -268,7 +268,7 @@ ui <- fluidPage(
                                   p("This research focuses on collecting accelerometer data independently and analyzing the data to gain some understanding of road quality around Macalester College over time. The time we focus on is the transition period between winter and spring starting in February and ending in early April. Through the data collection and analysis, we seek to answer the following: How do road quality conditions vary around Macalester College as winter transitions into spring?
 "),
                                   h3("Accelerometers"),
-                                  p("Accelerometers are a relatively affordable and convenient way to measure the quality of roads while traveling on them. These meters can measure the specific acceleration changes of a vehicle they are attached to. This data in turn can be used as a proxy for measurements of  the quality of the pavement being driven on. There have been studies done that measure the usefulness of different placements of these motion sensors on vehicles (Vittorio Astarita et al.). Viewing these studies and their results can help an individual to understand where the best placement could be to measure road quality themselves. Due to cost limitations in this study, the accelerometer used is mounted inside the car. Studies using accelerometers to measure presence of potholes and other road imperfections have moved away from if they are good tools and more towards using the data collected for machine learning models to classify potholes vs other conditions (Astarita et al.). This indicates that accelerometers are an established way to measure surface roughness or road quality."),
+                                  p("Accelerometers are a relatively affordable and convenient way to measure the quality of roads while traveling on them. These meters can measure the specific acceleration changes of a vehicle they are attached to. This data in turn can be used as a proxy for measurements of  the quality of the pavement being driven on. There have been studies done that measure the usefulness of different placements of these motion sensors on vehicles (Astarita et al.). Viewing these studies and their results can help an individual to understand where the best placement could be to measure road quality themselves. Due to cost limitations in this study, the accelerometer used is mounted inside the car. Studies using accelerometers to measure presence of potholes and other road imperfections have moved away from if they are good tools and more towards using the data collected for machine learning models to classify potholes vs other conditions (Astarita et al.). This indicates that accelerometers are an established way to measure surface roughness or road quality."),
                                   p("There are many app options you can download and use if your phone has a built in accelerometer (which most smartphones do). One such app that has many data collection options such as accelerometer, gyroscope, and GPS as well as is capable of exporting data as CSV or other compatible form is Sensor Logger. This app is what was used for all data collection and exportation of recorded data. Helpfully, this app has detailed documentation on its", 
                                     a("website", href = "https://www.tszheichoi.com/sensorlogger", target = "_blank"),
                                     "and corresponding",
@@ -428,16 +428,18 @@ ui <- fluidPage(
                  tabPanel("Bibliography",
                           h1("--"),
                           h2("Sources"),
-                          p("source"),
-                          p("source"),
-                          p("source")
+                          p("Astarita, V., Guido, G., Vitale, A., & Giofrè, V. P. (2024). Using accelerometer data for road surface monitoring: A machine learning approach. Scientific Reports, 14(1). https://www.nature.com/articles/s41598-024-61757-1"),
+                          p("Martinelli, A., Meocci, M., Dolfi, M., Branzi, V., Morosi, S., Argenti, F., Berzi, L., & Consumi, T. (2022). Road surface anomaly assessment using low-cost accelerometers: A machine learning approach. Sensors, 22(10), 3788. https://doi.org/10.3390/s22103788"),
+                          p("Roadscanners. (2024, June 3). Using accelerometer data in proactive maintenance of roads. Roadscanners. https://www.roadscanners.com/2024/06/03/using-accelerometer-data-in-proactive-maintenance-of-roads/
+")
                           ),
                  tabPanel("Apendix",
                           h1("--"),
                           h2("Data Availability"),
                           p("All data and corresponding cleaning and visualization files compiled prior to the final website (and the Shiny web app file) can be found
                             in this",
-                            a("GitHub repository", href = "https://www.tszheichoi.com/sensorlogger", target = "_blank"),)
+                            a("GitHub repository.", href = "https://github.com/laynajohnson/Road-Quality-Around-Macalester-College", target = "_blank"),),
+                          p("Directions for how to navigate the repo can be foundin the README description on the home code page.")
                           )
                )
              )
