@@ -282,7 +282,11 @@ ui <- fluidPage(
                                     "and corresponding",
                                     a("GitHub.", href = "https://github.com/tszheichoi/awesome-sensor-logger", target = "_blank")),
                                   h3("Freeze-Thaw Cycle"),
-                                  p("Along with prior research on the usefulness of accelerometers to measure road quality, we also looked into literature surrounding the relation of the freeze-thaw cycle to potholes."),
+                                  p("Along with prior research on the usefulness of accelerometers to measure road quality, we also looked into literature surrounding the relation of the freeze-thaw cycle to potholes. There are many different research articles focusing
+                                  on the freeze-thaw cycle in relation to road quality, most specifically, potholes. Djabatey (2023) researched this relationship and summarized how roads respond to environmental changes as:"),
+                                  p("1. Low temperature: roads are more likely to crack rather than simply flow or rut (depressions in road due to traffic use)."),
+                                  p("2. High precipitation: Roads become more saturated and are susceptible to the effects of water pressure (mainly expansion when freezing)."),
+                                  p("These two ideas will guide the research to answer our primary question of effects of season change on road quality."),
                                   h1("--")
                                   ),
                          
@@ -290,7 +294,7 @@ ui <- fluidPage(
                                   h1("--"),
                                   h4("How do road quality conditions vary around Macalester College as winter transitions into spring?"),
                                   h2("Data Collection"),
-                                  p("In order to answer this question, we collect data with accelerometer and GPS sensors mounted in a vehicle using the Sensor Logger app on an iOS device (iPhone 14). The app is available for both iOS and Android devices. These sensors are built into the device itself and the app helps to record this data for export and analysis. The phone is attached to a phone-holder system that attaches to the vent of the car and holds the phone in an upright and level position. When using the accelerometer and GPS sensor options, we collect three variables of interest for this study: acceleration in +/- X, Y, and Z directions, time, and location. Additional details about these collected data is included in the Data Cleaning section. Along with these data recorded through the Sensor Logger app, general condition variables are also collected. When measuring and considering road quality, it is important to think about environmental influences that can alter recordings such as weather events and general road conditions (e.g. rain, ice, or unplowed snow). Refer to the end of Collection Details for more information on supplementary data."),
+                                  p("In order to answer this question, we collect data with accelerometer and GPS sensors mounted in a vehicle using the Sensor Logger app on an iOS device (iPhone 14). The app is available for both iOS and Android devices. These sensors are built into the device itself and the app helps to record this data for export and analysis. The phone is secured to a phone-holder system that attaches to the vent of the car and holds the phone in an upright and level position. When using the accelerometer and GPS sensor options, we collect three variables of interest for this study: acceleration in +/- X, Y, and Z directions, time, and location. Additional details about these collected data is included in the Data Cleaning section. Along with these data recorded through the Sensor Logger app, general condition variables are also collected. When measuring and considering road quality, it is important to think about environmental influences that can alter recordings such as weather events and precipitation. Refer to the end of Collection Details for more information on supplementary data."),
                                   h3("Data Details"),
                                   p("The data is collected in a mostly weekly schedule as the focus of this study is to analyze how road quality varies as the seasons change. Starting Wednesday, February 19th data is collected every week on Thursdays (day was changed after the first collection) until April 3rd around Macalester College in Saint Paul, Minnesota. This means there are seven total recording sessions. The recordings include acceleration, location, and time data from the main streets around Macalester. These streets include: Grand Ave, Fairview Ave, Snelling Ave, Saint Clair Ave, Summit Ave, Lincoln Ave, Macalester St, Cambridge St, and S Vernon St. These streets are essential to travel around Macalester College and form the study area within the border roads of Fairview Ave, Summit Ave, Snelling Ave, and Saint Clair Ave."),
                                   p("The Sensor Logger app starts a recording when you tap the “Start Recording” button in the Logger tab after toggling on your desired sensors. For the purpose of this study, the accelerometer and Location internal sensors were toggled on and everything else left off. To facilitate quality readings across different important streets we start a recording at the “start” of the street within the study area shown in Figure 1. Using this method ensures each side and/or lane of a given street is measured with no trailing collected data points to be removed while processing the data. After minimal testing of the recording methodology, we discovered the locational data is sensitive enough to detect which side of the street you are on. The recording of both sides and all lanes of each street help to make a more robust analysis of the road quality in our study area."),
@@ -332,10 +336,10 @@ ui <- fluidPage(
                                             h1("--"),
                                             h2("Data Visualization"),
                                             p("These visualizations will show trends and changes over time graphically. There are two main areas of focus for these visualizations: to represent road conditions over time and conditions over space and time. The variables to be used for these visualizations include acceleration, time, and location. You can view these visualizations in the next two tabs."),
-                                            withMathJax(p("Throught these visualizations, we seek to answer our research question in an exploratory fashion: How do road quality conditions vary around Macalester College as winter transitions into spring? As a proxy to road conditions, we can calculate the smoothed acceleration magnitude of our data. This involves taking the magnitude of our \\(X\\), \\(Y\\), and \\(Z\\) acceleration values in \\(m/s^2\\) as, $$\\|{v}\\|_2 = \\sqrt{X^2 + Y^2 + Z^2}$$ (also called the Euclidean norm) and compute the rolling average of the magnitude values over time. We can learn about the magnitude of acceleration at each point independent of the direction of acceleration. This will help to understand events with significant acceleration in one or more directions and quiets some of the noise from measuring errors (Martinez-Ríos et al., 2022).")),
+                                            withMathJax(p("Throught these visualizations, we seek to answer our research question in an exploratory fashion: How do road quality conditions vary around Macalester College as winter transitions into spring? As a proxy to road conditions, we can calculate the smoothed acceleration magnitude of our data. This involves taking the magnitude of our \\(X\\), \\(Y\\), and \\(Z\\) acceleration values in \\(m/s^2\\) as, $$\\|{v}\\|_2 = \\sqrt{X^2 + Y^2 + Z^2}$$ (also called the L2 norm) and compute the rolling average of the magnitude values over time. We can learn about the magnitude of acceleration at each point independent of the direction of acceleration. This will help to understand events with significant acceleration in one or more directions and quiets some of the noise from measuring errors (Martinez-Ríos et al., 2022).")),
                                             h3("Spatial Visualization"),
                                             p("For spatial visualization, we created maps which show the magnitude of acceleration values as described before broken into categories using the international ISO 2631-1 Standard defining levels of comfort:"),
-                                            withMathJax(p("\\(\\|v\\|< 0.315 m/s^2\\) as being comfortable,  \\(0.315m/s^2 < \\|v\\| < 0.8 m/s^2\\) as fairly comfortable, \\(0.8m/s^2 < \\|v\\| < 1.6 m/s^2\\) as uncomfortable and \\(\\|v\\| > 2 m/s^2\\) being extremely uncomfortable (International Organization for Standardization [ISO], 1997).")),
+                                            withMathJax(p("\\(\\|v\\|< 0.315 m/s^2\\) as being comfortable,  \\(0.315m/s^2 < \\|v\\| < 1.6 m/s^2\\) as fairly comfortable, \\(1.6m/s^2 < \\|v\\| < 2 m/s^2\\) as uncomfortable and \\(\\|v\\| > 2 m/s^2\\) being extremely uncomfortable (International Organization for Standardization [ISO], 1997).")),
                                             p("The maps visualized in the next section represent the different time periods of collection in the study. There are seven different maps of all roads* which visualize discrete measures of the magnitude of acceleration at each second interval of recording."),
                                             p("*Recording for March 20th is missing the recording for Snelling Avenue North in the right lane. This is due to failure to record this segment."),
                                             h3("Time Series Visualization"),
@@ -347,10 +351,10 @@ ui <- fluidPage(
                                             p("The y-axis of these line charts show the same magnitude of acceleration values shown in the map above. These plots make viewing general trends for each road over time easier. Combined with the spatial visualization, a user can get a more complete view
                           and understanding of the road conditions for the roads around Macalester."),
                                             h3("Additional Visualization"),
-                                            p("In the implications tab, you can find an additional visualization which helps to contextualize the road conditions during some week along with the temperature highs and lows. The freeze-thaw cycle....."),
-                                            p("This line chart shows the dialy and weekly highs and lows for the days we recorded our accelerometer and location data. "), 
+                                            p("In the implications tab, you can find an additional visualization which helps to contextualize the road conditions during the study period. The stacked graph contains information on weekly and daily temperatures as well as the total accumulated precipitation during the week
+                                              preceding the day of collection. With this visualization we can explain some connections to the freeze-thaw cycle."),
                                             h2("Statistical Summaries"),
-                                            p("Statistical summaries for our research are located in the implications tab. These summary tables show different summaries of road quality for 
+                                            p("Statistical summaries for our research are located in the Analysis tab. These summary tables show different summaries of road quality for 
                           the different times and base streest in the analysis. The first selection called 'Discomfort' shows the number of times each base street has a magnitude equal to
                           or greater than the value for uncomfortable acceleration in meters per second squared (1.6). The next two selections are 'Highest Acceleration'
                           and 'Average Acceleration' which show the highest magnitude of acceleration and average acceleration per date of recording time and base street.
@@ -425,8 +429,19 @@ ui <- fluidPage(
                          tabPanel("Discussion",
                                     h1("--"),
                                     h2("Implications"),
-                                    h3("Road Maintenence"),
-                                    p("One question to ask when studying road quality is this: When was the last time each street had maintenence to address poor road conditions? On the Saint Paul Public Works website, you can find information on past and
+                                    h3("Season Change"),
+                                  p("Our primary research question focuses on the temporal aspect of season change as a factor effecting the quality of roads. We explained the freeze-thaw cycle in the introduction, and we will pull concepts from these ideas to contextualize our research and implications. To start, we have a simple line graph showing what temperature highs and lows looked
+                                    like over the duration of our study period. From the graph below, we can see that every week inside the recording window experienced above and below freezing temperatures aside from the first date. Precipitation wise, we can see from the bar plot that within some weeks there was precipitation, and others there was not."),
+                                  fluidRow(
+                                    column(8, plotlyOutput("temp_precip", height = "400px"), offset = 2)
+                                  ),
+                                  p("As prior research focuses on the combination of precipitation in the cracks and voids of the asphalt paired with the freezing expansions and thawing potholes left over, we can view our data results with these ideas. In theory, we should see that after some instance of precipitation where water was able to seep into the cracks during warmer temperatures then
+                                    freeze and expand, there would be more uncomfortable roads. This means on the dates of March 6th, 13th, and 20th as well as April 3rd we might expect to see higher values of our variables of interest than from the recording of the week prior. From comparing these ideas with the tables in the previous section we do not see this trend. Generally, there is not one 
+                                    set trend in how any variable between discomfort instances, average L2 norm, and highest L2 norm differs from time to time."),
+                                  p("Some things to consider adjusting for in the future could be things like asphalt composition, traffic flow between streets, and presence of small debris like dirt and gravel expanding in cracks with the water (Djabatey, 2023). The Saint Paul Public works site on the asphalt plant in Saint Paul that supplies the asphalt for all repair projects does not have any
+                                    detailed information on the exact composition of the material used on our roads. If such data was easily available, it could be used to understand how permeable the roads driven on are and how susceptible they may be to worsening cracks and holes from the freeze-thaw cycle. "),
+                                  h3("Road Maintenence"),
+                                  p("Another question to ask when studying road quality is this: When was the last time each street had maintenence to address poor road conditions? On the Saint Paul Public Works website, you can find information on past and
                                       present construction projects. In Saint Paul, residential streets typically get seal coated in rotation every eight years (Seal Coating Program | Saint Paul Minnesota, n.d.). According to Public Works, the city is divided into eight areas, and the area which
                                       Macalester Groveland is in was last seal coated in 2021. The process of seal coating is a preventative measure which will result in a waterproof membrane which helps to seal the surface and small cracks. The busier arterial streets will go through a different 
                                       process called 'Mill & Overlay' which is a more extreme measure. 
@@ -437,17 +452,11 @@ ui <- fluidPage(
                                       the two parts of the road as well as experience driving them, the difference in quality is clear."),
                                   p("During the 2024 construction season, Snelling Avenue between St. Clair and Grand Ave. was also resurfaced in an ongoing construction project (Hwy 51/Snelling Ave. in St. Paul Project - MnDOT, n.d.). There are no additional details on what this resurfacing entailed, but the driving experience
                                     is smooth. This is also reflected in the statistical summaries with a relatively low average magnitude of acceleration. It also appears that no other street on the route was serviced outside of typical maintence which does include pothole patching when necessary."),
-                                  h3("Season Change"),
-                                  p("Our primary research question focuses on the temporal aspect of season change as a factor effecting the quality of roads. We explained the freeze-thaw cycle in the introduction, and we will pull concepts from these ideas to contextualize our research and implications. To start, we have a simple line graph showing what temperature highs and lows looked
-                                    like over the duration of our study period. From the graph below, we can see that every week inside the recording window experienced above and below freezing temperatures aside from the first date. Precipitation wise, "),
-                                    # fluidRow(
-                                    #   column(7, plotlyOutput("temp_graph", height = "250px")),
-                                    #   column(5, plotlyOutput("precip_graph", height = "250px"))
-                                    # ),
-                                  fluidRow(
-                                    column(7, plotlyOutput("temp_precip", height = "250px"), offset = 3)
-                                  ),
-                                    h2("Strengths and Limitations"),
+                                  h3("Whole-Body Vibrations"),
+                                  p("In the introduction, we mentioned the idea of the harms of whole-body vibrations and how these can be caused by consistent travel over rough surfaces (ISO, 1997). By looking at the average values of magnitude of acceleration for each road in our study area, we would not necessarily be concerned
+                                    over the risk of incurring these kinds of bodily harms traveling over these roads. The values in the average L2 norm table ranged from classifying as comfortable to fairly uncomfortable. Macalester Street does have the highest average magnitude of acceleration across time, but with the added 
+                                    knowledge that there are speedbumps, we wouldn't consider this to be a source of freeze-thaw cycle or the city failing to patch holes. As all roads fall consistently with in the comfortable to fairly uncomfortable categories, we would not be concerned about whole-body vibration impacts."),  
+                                  h2("Strengths and Limitations"),
                                     p("The choice of using the magnitude of acceleration for this reasearch has the benefit of easier interpretations and explanation of the calculation. On the other hand, the chosen measure of road quality as the magnitude 
                                     of acceleration rather than some other value can also be a limitation of this study. There are many different measurements found in literature that can be calculated from accelerometer data and used to 
                                     discover indications of poor road quality. These measure include simple vertical acceleration (Y acceleration in this case) to focus on instances of potholes or other vertical bumps, International Roughness Index 
@@ -456,7 +465,6 @@ ui <- fluidPage(
                                       us to focus on using the L2 norm. Simply using the Y (vertical) acceleration as an indicator of road quality has its drawbacks in how the mounted iPhone accelerometer jostles in the car over rough road conditions. Generally, if
                                       there is some road condition which the vehicle has to go over, you would feel it in a more up-and-down fashion. However, through observing how the mounted phone reacted to road conditions in the car in the manner in which it
                                       was mounted, the magnitude of acceleration seemed to be a better alternative to capture all movement while quieting unecessary noise."),
-                                    p("text"),
                                   h2("Conclusions"),
                                   p("Within the confines of our study, it does not appear that the change in seasons was directly connected to worsening road quality, as was evident from our visual and statistical results. Some factors that could be interacting with the qualty of the study conducted
                                     include the small study area and short data collection window. With additional funding and time, these aspects could have become more robust, leading to more quality data and analysis capabilities. Additionally, with more time, a more detailed or novel method of
@@ -473,6 +481,8 @@ ui <- fluidPage(
                           h1("--"),
                           h2("Sources"),
                           p("Chen, K., Lu, M., Fan, X., Wei, M., & Wu, J. (2011). Road condition monitoring using on-board Three-axis Accelerometer and GPS Sensor. 2011 6th International ICST Conference on Communications and Networking in China (CHINACOM), 1032–1037. https://doi.org/10.1109/ChinaCom.2011.6158308
+"),
+                          p("Djabatey, C. (2023, July 21). Experimenting and modelling the role of road surface detritus in the formation of potholes [Thesis (University of Nottingham only)]. University of Nottingham. https://eprints.nottingham.ac.uk/73466/
 "),
                           p("Hwy 51/Snelling Ave. In St. Paul Project—MnDOT. (n.d.). Retrieved May 1, 2025, from https://www.dot.state.mn.us/metro/projects/snellingave-stpaul/index.html
 "),
@@ -496,7 +506,22 @@ ui <- fluidPage(
                           p("All data and corresponding cleaning and visualization files compiled prior to the final website (and the Shiny web app file) can be found
                             in this",
                             a("GitHub repository.", href = "https://github.com/laynajohnson/Road-Quality-Around-Macalester-College", target = "_blank")),
-                          p("Directions for how to navigate the repo can be foundin the README description on the home code page.")
+                          p("Directions for how to navigate the repo can be foundin the README description on the home code page."),
+                          h2("Package Dependencies"),
+                          h3("UI & App Functionality:"),
+                          p("  - shiny"),
+                          p("  - shinythemes"),
+                          p("  - shinyWidgets"),
+                          
+                          h3("Data Analysis & Visualization:"),
+                          p("  - tidyverse"),
+                          p("  - ggplot2"),
+                          p("  - plotly"),
+                          p("  - sf"),
+                          p("  - leaflet"),
+                          p("  - RColorBrewer"),
+                          p("  - htmltools"),
+                          p("  - gt")
                           )
                )
              )
@@ -587,66 +612,23 @@ server <- function(input, output) {
     mapping(selected_data, title = selected_title)
   })
   
-  # output$temp_graph <- renderPlotly({
-  #   
-  #   temp <- ggplot(env_long, aes(
-  #     x = date, 
-  #     y = temp, 
-  #     color = category,
-  #     group = category, 
-  #     text = paste0("Date: ", format(date, "%B %d"), "<br>Temperature (°F): ", temp)
-  #   )) +
-  #     geom_line() +
-  #     geom_point() +
-  #     geom_hline(aes(yintercept = 35), color = "darkgray", alpha = 0.7, linetype='dotted') +
-  #     scale_color_manual(values = color_map) +
-  #     theme_minimal() +
-  #     labs(
-  #       color = "Temperature Type",
-  #       x = "Date",
-  #       y = "Temperature (°F)"
-  #     ) +
-  #     theme(
-  #       legend.title = element_text(size = 10),  
-  #       legend.text = element_text(size = 8)
-  #     )
-  #   
-  #  ggplotly(temp, tooltip = "text")
-  # })
-  # 
-  # output$precip_graph <- renderPlotly({
-  #   precipitation <- ggplot(environment_data, aes(
-  #     x = date, y = precip_total, 
-  #     text = paste0("Date: ", format(date, "%B %d"), "<br>Total Precipitation: ", precip_total, " in")
-  #   )) +
-  #     geom_col(fill = "#456193") +
-  #     scale_x_date(date_labels = "%b %d", date_breaks = "7 days") +
-  #     theme_minimal() +
-  #     labs(
-  #       x = "Date",
-  #       y = "Total Precipitation (in)"
-  #     ) +
-  #     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  #   
-  #   ggplotly(precipitation, tooltip = "text")
-  # })
-  
   output$temp_precip <- renderPlotly({
-    temp <- ggplot(env_long, aes(
+    # Temperature plot
+    temp_plot <- ggplot(env_long, aes(
       x = date,
       y = temp,
       color = category,
       group = category,
-      text = paste0("Date: ", format(date, "%B %d"), "<br>Temperature (°F): ", temp)
+      text = paste0("Date: ", format(date, "%B %d"), "<br>Temperature (°F): ", round(temp, 1))
     )) +
       geom_line() +
       geom_point() +
-      geom_hline(aes(yintercept = 35), color = "darkgray", alpha = 0.7, linetype='dotted') +
+      geom_hline(yintercept = 35, color = "darkgray", alpha = 0.7, linetype = "dotted") +
       scale_color_manual(values = color_map) +
       theme_minimal() +
       labs(
         color = "Temperature Type",
-        x = "Date",
+        x = NULL,
         y = "Temperature (°F)"
       ) +
       theme(
@@ -654,7 +636,8 @@ server <- function(input, output) {
         legend.text = element_text(size = 8)
       )
     
-    precipitation <- ggplot(environment_data, aes(
+    # Precipitation plot
+    precip_plot <- ggplot(environment_data, aes(
       x = date, y = precip_total,
       text = paste0("Date: ", format(date, "%B %d"), "<br>Total Precipitation: ", precip_total, " in")
     )) +
@@ -663,14 +646,31 @@ server <- function(input, output) {
       theme_minimal() +
       labs(
         x = "Date",
-        y = "Total Precipitation (in)"
-      ) +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        y = "Precipitation (in)"
+      ) 
     
-    fig <- subplot(temp, precipitation,  nrows = 2)
+    temp_interactive <- ggplotly(temp_plot, tooltip = "text") %>% layout(hoverlabel = list(bgcolor = "white"))
+    precip_interactive <- ggplotly(precip_plot, tooltip = "text") %>% layout(hoverlabel = list(bgcolor = "white"))
     
-    fig
+    # Combining the two plots into one
+    subplot(temp_interactive, precip_interactive,
+            nrows = 2,
+            shareX = TRUE,
+            titleY = TRUE,
+            heights = c(0.7, 0.3)) %>%
+      layout(
+        title = list(
+          text = "Weather Conditions: February 19th – April 3rd",
+          x = 0.5,
+          xanchor = "center",
+          yanchor = "top",
+          font = list(size = 18)
+        ),
+        margin = list(t = 50)
+      )
+    
   })
+  
   
   output$accel_plot <- renderPlotly({
   req(input$date_choice)

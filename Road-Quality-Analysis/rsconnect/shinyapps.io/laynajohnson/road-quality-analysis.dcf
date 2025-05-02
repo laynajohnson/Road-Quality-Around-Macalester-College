@@ -5,7 +5,7 @@ account: laynajohnson
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14011494
-bundleId: 10120571
+bundleId:
 url: https://laynajohnson.shinyapps.io/road-quality-analysis/
 version: 1
 asMultiple: FALSE
