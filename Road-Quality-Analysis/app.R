@@ -19,10 +19,13 @@ roads <- read_sf("data/raw-data/macalester_road_lines/macalester_road_lines.shp"
 roads <- st_transform(roads, crs = 4326)
 
 
-# Reading in data and creating function for map
-dates <- c("feb19", "feb27", "mar06", "mar13", "mar20", "mar27", "apr03")
-dataset_list <- setNames(
-  lapply(dates, function(d) read_csv(paste0("data/cleaned-data/combined-clean/", d, "-clean.csv"))), dates)
+feb19 <- read_csv("data/cleaned-data/combined-clean/feb19-clean.csv")
+feb27 <- read_csv("data/cleaned-data/combined-clean/feb27-clean.csv")
+mar06 <- read_csv("data/cleaned-data/combined-clean/mar06-clean.csv")
+mar13 <- read_csv("data/cleaned-data/combined-clean/mar13-clean.csv")
+mar20 <- read_csv("data/cleaned-data/combined-clean/mar20-clean.csv")
+mar27 <- read_csv("data/cleaned-data/combined-clean/mar27-clean.csv")
+apr03 <- read_csv("data/cleaned-data/combined-clean/apr03-clean.csv")
 
 mapping <- function(combined_data, title) {
   # Making it spatial
@@ -270,6 +273,12 @@ ui <- fluidPage(
                                   p("Our research focuses on collecting accelerometer data to discover the comfort levels on the streets around Macalester College. With this data, we hope to gain some understanding of 
                                     road quality around Macalester over time. We focus on the transition period between winter and spring starting in February and ending in early April. Through the data collection and analysis, we seek to answer the following:"),
                                   tags$p(" How do road quality conditions vary around Macalester College as winter transitions into spring?", style = "color: black;"),
+                                  h3("Freeze-Thaw Cycle"),
+                                  p("Along with prior research on the usefulness of accelerometers to measure road quality, we also looked into literature surrounding the relation of the freeze-thaw cycle to potholes. There are many different research articles focusing
+                                  on the freeze-thaw cycle in relation to road quality, most specifically, potholes. Djabatey (2023) researched this relationship and summarized how roads respond to environmental changes as:"),
+                                  p("1. Low temperature: roads are more likely to crack rather than simply flow or rut (depressions in road due to traffic use)."),
+                                  p("2. High precipitation: Roads become more saturated and are susceptible to the effects of water pressure (mainly expansion when freezing)."),
+                                  p("These two ideas will guide the research to answer our primary question of effects of season change on road quality."),
                                   h3("Accelerometers"),
                                   p("Accelerometers are a relatively affordable and convenient way to measure the quality of roads while traveling on them. These meters can measure the specific acceleration changes of
                                     a vehicle they are attached to. This data in turn can be used as a proxy for measurements of  the quality of the pavement being driven on. This research started with a literature review of 
@@ -281,12 +290,6 @@ ui <- fluidPage(
                                     a("website", href = "https://www.tszheichoi.com/sensorlogger", target = "_blank"),
                                     "and corresponding",
                                     a("GitHub.", href = "https://github.com/tszheichoi/awesome-sensor-logger", target = "_blank")),
-                                  h3("Freeze-Thaw Cycle"),
-                                  p("Along with prior research on the usefulness of accelerometers to measure road quality, we also looked into literature surrounding the relation of the freeze-thaw cycle to potholes. There are many different research articles focusing
-                                  on the freeze-thaw cycle in relation to road quality, most specifically, potholes. Djabatey (2023) researched this relationship and summarized how roads respond to environmental changes as:"),
-                                  p("1. Low temperature: roads are more likely to crack rather than simply flow or rut (depressions in road due to traffic use)."),
-                                  p("2. High precipitation: Roads become more saturated and are susceptible to the effects of water pressure (mainly expansion when freezing)."),
-                                  p("These two ideas will guide the research to answer our primary question of effects of season change on road quality."),
                                   h1("--")
                                   ),
                          
